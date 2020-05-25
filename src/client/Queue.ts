@@ -3,7 +3,6 @@
 /**
  * This queue system is based off the source found under Dinocord: https://github.com/sunsetkookaburra/dinocord/blob/master/api/queue.ts
  * This code is registered under the MIT license: https://github.com/sunsetkookaburra/dinocord/blob/master/LICENCE
- * If the devs seeing this, thanks again for making the code publicly available :) Dinocord has been a huge inspiration to cordeno.
  */
 import { deferred } from "../../deps.ts";
 
