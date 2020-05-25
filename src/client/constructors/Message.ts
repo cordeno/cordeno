@@ -10,11 +10,11 @@ interface MessageObject {
 }
 
 export class Message {
-  public event!: string
+  public event!: string;
   public data!: {
-    [key: string]: any
-  }
-  constructor(private client: Client, public payload: any) {
+    [key: string]: any;
+  };
+  constructor(public client: Client, public payload: any) {
   }
   async reply(msg: string) {
     this.client.http.post(`/channels/${this.payload.d.channel_id}/messages`, {

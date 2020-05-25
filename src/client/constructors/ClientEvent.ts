@@ -1,6 +1,6 @@
 interface IClientEvent {
-  payload: any,
-  data?: object
+  payload: any;
+  data?: object;
 }
 
 export function ClientEvent<T extends IClientEvent>(constructor: T) {
