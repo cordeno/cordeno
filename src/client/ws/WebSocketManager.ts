@@ -1,7 +1,7 @@
 import { connectWebSocket, WebSocket, EventEmitter } from "../../../deps.ts";
 import { Discord, Payload, OPCODE } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
-import { Client } from "../client.ts";
+import { Client } from "../Client.ts";
 import { AsyncEventQueue } from "../Queue.ts";
 
 export class WebSocketManager extends EventEmitter {
