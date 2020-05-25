@@ -10,6 +10,7 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 Cordeno is still in its **very early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be inplemented.
 
 # Example:
+index.ts
 ```ts
 import { Client } from "https://deno.land/x/cordeno/mod.ts";
 
@@ -25,3 +26,13 @@ for await (const ctx of client) {
   }
 }
 ```
+After creating your file and pasting the above code, run
+```shell
+deno run --allow-net --reload index.ts
+```
+The `--reload` tag reinstalls all the dependencies in your project.
+<br/>
+You don't have to include `--reload` every run, but I recommend including it as an arguement at least once a day to keep cordeno up to date.
+
+# Contributing
+Want to contribute? Follow the [Contributing Guide](/CONTRIBUTING.md)!
