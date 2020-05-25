@@ -1,10 +1,16 @@
 import { Client } from "../mod.ts";
-import * as dotenv from 'https://deno.land/x/denoenv/mod.ts'
-const env = dotenv.config()
+import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
+const env = dotenv.config();
 
-console.log(env.TOKEN)
 const client = new Client({
   token: env.TOKEN,
 });
 
 console.log(`Running cordeno v${client.version}`);
+
+for await (const ctx of client) {
+  if (ctx.event === "MESSAGE_CREATE") {
+    console.log(`A messge was created by ${ctx.d.author.username} that says: ${ctx.d.content}`)
+  }
+}
+// Code past the above line won't run (since its an infinite event loop)

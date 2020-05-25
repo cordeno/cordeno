@@ -1,33 +1,36 @@
-import { connectWebSocket, WebSocket } from "../../../deps.ts";
+import { connectWebSocket, WebSocket, EventEmitter } from "../../../deps.ts";
 import { Discord, Payload, OPCODE } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
 import { Client } from "../client.ts";
+import { AsyncEventQueue } from '../Queue.ts'
 
-export class WebSocketManager {
+export class WebSocketManager extends EventEmitter {
   private socket!: WebSocket;
   private beatInterval!: number;
   private beatRecieved: boolean = true;
+  public queue!: AsyncEventQueue<Payload>;
   constructor(private client: Client) {
+    super();
+    this.queue = new AsyncEventQueue()
   }
-
   async connect() {
     this.socket = await connectWebSocket(Discord.Endpoint);
     for await (const msg of this.socket) {
-      const payload: Payload = JSON.parse(msg.toString());
-
       if (typeof msg === "string") {
+        const payload: Payload = JSON.parse(msg.toString());
+        this.queue.post(payload)
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();
             this.heartbeatInterval(payload.d.heartbeat_interval);
+            break;
           }
           case OPCODE.HeartbeatACK: {
             console.log(payload);
+            break;
           }
         }
-      }
-      else {
-
+      } else {
       }
     }
   }
@@ -39,8 +42,8 @@ export class WebSocketManager {
         token: this.client.options.token,
         properties: {
           $os: "linux",
-          $browser: Cordeno.Name,
-          $device: Cordeno.Name,
+          $browser: `${Cordeno.Name} v${Cordeno.Version}`,
+          $device: `${Cordeno.Name} v${Cordeno.Version}`,
         },
       },
     }));
@@ -49,7 +52,7 @@ export class WebSocketManager {
   async heartbeatInterval(rate: number) {
     if (this.beatRecieved) {
       this.beatInterval = setInterval(() => {
-        this.heartbeat()
+        this.heartbeat();
       }, rate);
       this.beatRecieved = false;
     } else {

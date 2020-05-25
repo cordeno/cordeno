@@ -4,6 +4,19 @@ import { WebSocketManager } from "./ws/WebSocketManager.ts";
 export class Client {
   private ws: WebSocketManager = new WebSocketManager(this);
   options!: CordenoOptions;
+
+  private async *[Symbol.asyncIterator]() {
+    for await (const payload of this.ws.queue) {
+      let datObj: any = {
+        ...payload,
+        event: payload.t
+      }
+      if (payload.t) {
+        yield datObj
+      }
+    }
+  }
+
   constructor(options: CordenoOptions) {
     this.options = options;
     if (!options.token) {
