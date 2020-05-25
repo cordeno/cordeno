@@ -9,10 +9,10 @@ export class Client {
     for await (const payload of this.ws.queue) {
       let datObj: any = {
         ...payload,
-        event: payload.t
-      }
+        event: payload.t,
+      };
       if (payload.t) {
-        yield datObj
+        yield datObj;
       }
     }
   }

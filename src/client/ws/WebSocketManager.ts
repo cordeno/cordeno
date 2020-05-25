@@ -2,7 +2,7 @@ import { connectWebSocket, WebSocket, EventEmitter } from "../../../deps.ts";
 import { Discord, Payload, OPCODE } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
 import { Client } from "../client.ts";
-import { AsyncEventQueue } from '../Queue.ts'
+import { AsyncEventQueue } from "../Queue.ts";
 
 export class WebSocketManager extends EventEmitter {
   private socket!: WebSocket;
@@ -11,14 +11,14 @@ export class WebSocketManager extends EventEmitter {
   public queue!: AsyncEventQueue<Payload>;
   constructor(private client: Client) {
     super();
-    this.queue = new AsyncEventQueue()
+    this.queue = new AsyncEventQueue();
   }
   async connect() {
     this.socket = await connectWebSocket(Discord.Endpoint);
     for await (const msg of this.socket) {
       if (typeof msg === "string") {
         const payload: Payload = JSON.parse(msg.toString());
-        this.queue.post(payload)
+        this.queue.post(payload);
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();
