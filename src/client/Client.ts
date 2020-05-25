@@ -2,7 +2,7 @@ import { Cordeno, CordenoOptions } from "./constant/cordeno.ts";
 import { WebSocketManager } from "./ws/WebSocketManager.ts";
 import { ReqHandler } from "./rest/ReqHandler.ts";
 import { Message } from "./constructors/Message.ts";
-import { ClientEvent } from './constructors/ClientEvent.ts'
+import { ClientEvent } from "./constructors/ClientEvent.ts";
 
 export class Client {
   private ws: WebSocketManager = new WebSocketManager(this);

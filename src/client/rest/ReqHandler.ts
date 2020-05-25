@@ -16,7 +16,7 @@ export class ReqHandler {
       method: "POST",
       headers,
       body: body,
-    })
+    });
     return res;
   }
 }
