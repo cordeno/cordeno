@@ -35,4 +35,4 @@ The `--reload` tag reinstalls all the dependencies in your project.
 You don't have to include `--reload` every run, but I recommend including it as an arguement at least once a day to keep cordeno up to date.
 
 # Contributing
-Want to contribute? Follow the [Contributing Guide](/CONTRIBUTING.md)!
+Want to contribute? Follow the [Contributing Guide](https://github.com/cordeno/cordeno/blob/master/CONTRIBUTING.md)!
