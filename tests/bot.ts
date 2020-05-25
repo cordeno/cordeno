@@ -13,4 +13,3 @@ for await (const ctx of client) {
     console.log(`A messge was created by ${ctx.d.author.username} that says: ${ctx.d.content}`)
   }
 }
-// Code past the above line won't run (since its an infinite event loop)

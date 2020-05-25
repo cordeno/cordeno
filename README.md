@@ -1,2 +1,27 @@
-<img src="https://raw.githubusercontent.com/cordeno/cordeno/master/assets/cordeno.gif" style='image-rendering: crisp-edges;' width="400px" height="400px" /># cordeno
-An easy to use Discord API library for the Deno runtime.
+![Cordeno](https://raw.githubusercontent.com/cordeno/cordeno/master/assets/cordeno-200.gif)
+# Cordeno
+An simplistic, event loop driven Discord API library for building powerful bots.
+<br/>
+Powered by the [Deno runtime](https://deno.land/).
+<br/>
+Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
+
+# Development progress
+Cordeno is still in its **very early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be inplemented.
+
+# Example:
+```ts
+import { Client } from "https://deno.land/x/cordeno/mod.ts";
+
+const client = new Client({
+  token: "YOUR TOKEN HERE",
+});
+
+console.log(`Running cordeno v${client.version}`);
+
+for await (const ctx of client) {
+  if (ctx.event === "MESSAGE_CREATE") {
+    console.log(`A messge was created by ${ctx.d.author.username} that says: ${ctx.d.content}`)
+  }
+}
+```
