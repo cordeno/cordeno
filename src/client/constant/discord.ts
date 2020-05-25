@@ -1,5 +1,6 @@
 enum Discord {
   Endpoint = "wss://gateway.discord.gg/?v=6&encoding=json",
+  Rest = "https://discordapp.com/api/v6",
 }
 
 enum OPCODE {

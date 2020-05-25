@@ -9,9 +9,9 @@ const client = new Client({
 console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
-  if (ctx.event === "MESSAGE_CREATE") {
-    console.log(
-      `A messge was created by ${ctx.d.author.username} that says: ${ctx.d.content}`,
-    );
+  if (ctx.event === 'MESSAGE_CREATE') {
+    if (ctx.data.author.id !== '713653377934032937') {
+      if (ctx.data.content === '!ping') ctx.reply('Pong!')
+    }
   }
 }

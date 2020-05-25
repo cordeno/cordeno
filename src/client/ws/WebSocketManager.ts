@@ -26,7 +26,6 @@ export class WebSocketManager extends EventEmitter {
             break;
           }
           case OPCODE.HeartbeatACK: {
-            console.log(payload);
             break;
           }
         }
