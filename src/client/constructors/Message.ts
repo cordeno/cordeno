@@ -10,6 +10,10 @@ interface MessageObject {
 }
 
 export class Message {
+  public event!: string
+  public data!: {
+    [key: string]: any
+  }
   constructor(private client: Client, public payload: any) {
   }
   async reply(msg: string) {
