@@ -1,4 +1,4 @@
-import { Client } from "../mod.ts";
+import { Client, Message } from "../mod.ts";
 import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
 const env = dotenv.config();
 
@@ -10,9 +10,10 @@ console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   if (ctx.event === "MESSAGE_CREATE") {
-    if (ctx.data.author.id !== client.user.id) {
-      if (ctx.data.content === "!ping") {
-        ctx.reply("Pong!");
+    const msg: Message = ctx;
+    if (msg.author.id !== client.user.id) {
+      if (msg.content === "!ping") {
+        msg.reply("Pong!");
         continue;
       }
     }

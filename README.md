@@ -12,7 +12,7 @@ Cordeno is still in its **very early stages of development**, and is not product
 # Example:
 index.ts
 ```ts
-import { Client } from "https://deno.land/x/cordeno/mod.ts";
+import { Client, Message } from "https://deno.land/x/cordeno/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -22,9 +22,10 @@ console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   if (ctx.event === "MESSAGE_CREATE") {
-    if (ctx.data.author.id !== client.user.id) {
-      if (ctx.data.content === "!ping") {
-        ctx.reply("Pong!");
+    const msg: Message = ctx;
+    if (msg.author.id !== client.user.id) {
+      if (msg.content === "!ping") {
+        msg.reply("Pong!");
         continue;
       }
     }

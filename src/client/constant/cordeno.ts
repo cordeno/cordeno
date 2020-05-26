@@ -1,6 +1,6 @@
 enum Cordeno {
   Name = "cordeno",
-  Version = "0.1.2",
+  Version = "0.1.3",
 }
 interface CordenoOptions {
   token: string;
