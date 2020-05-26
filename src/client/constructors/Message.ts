@@ -1,6 +1,11 @@
 import { Client } from "../Client.ts";
 import * as Interfaces from "../interfaces/discord.ts";
 
+export interface MessageOptions {
+  ping?: boolean;
+  tts?: boolean;
+}
+
 export class Message implements Interfaces.Message {
   public event!: string;
   id!: string;
@@ -30,10 +35,20 @@ export class Message implements Interfaces.Message {
 
   constructor(public client: Client, public payload: any) {
   }
-  async reply(msg: string) {
+
+  async reply(
+    msg: string,
+    options: MessageOptions = {},
+  ) {
+    options = { ping: false, tts: false, ...options };
+
+    if (options.ping) {
+      msg = `<@${this.author.id}> ${msg}`;
+    }
+
     this.client.http.post(`/channels/${this.payload.d.channel_id}/messages`, {
-      "content": msg,
-      "tts": false,
+      content: msg,
+      tts: options.tts,
     });
   }
 }
