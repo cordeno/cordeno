@@ -31,7 +31,7 @@ Your console output here
 ```
 
 
-**Screenshots**:
+**Screenshots (optional)**:
 If applicable, add screenshots to help explain your problem.
 
 **Additional context**:
