@@ -34,5 +34,5 @@ Your console output here
 **Screenshots (optional)**:
 If applicable, add screenshots to help explain your problem.
 
-**Additional context**:
+**Additional context (optional)**:
 Add any other context about the problem here.
