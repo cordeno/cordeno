@@ -1,8 +1,8 @@
 import { Client } from "../Client.ts";
-import * as Interfaces from "../interfaces/discord.ts";
+import * as Interfaces from "../interfaces/interface_export.ts";
 
 export interface MessageOptions {
-  ping?: boolean;
+  mention?: boolean;
   tts?: boolean;
 }
 
@@ -38,11 +38,9 @@ export class Message implements Interfaces.Message {
 
   async reply(
     msg: string,
-    options: MessageOptions = {},
+    options: MessageOptions = { mention: false, tts: false },
   ) {
-    options = { ping: false, tts: false, ...options };
-
-    if (options.ping) {
+    if (options.mention) {
       msg = `<@${this.author.id}> ${msg}`;
     }
 

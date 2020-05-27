@@ -1,4 +1,4 @@
-import { Client, Message } from "../mod.ts";
+import { Client, Message, Ready } from "../mod.ts";
 import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
 const env = dotenv.config();
 
@@ -9,16 +9,24 @@ const client = new Client({
 console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
-  if (ctx.event === "MESSAGE_CREATE") {
-    const msg: Message = ctx;
-    console.log(msg.member.roles);
+  switch (ctx.event) {
+    case "READY": {
+      const ready: Ready = ctx;
 
-    if (msg.author.id !== client.user.id) {
-      if (msg.content === "!ping") {
-        msg.reply("Pong!", {
-          ping: true,
-        });
+      console.log("Cordeno is now ready!");
+      console.log("Discord websocket API version is " + ready.v);
+      break;
+    }
+    case "MESSAGE_CREATE": {
+      const msg: Message = ctx;
+
+      if (msg.author.id !== client.user.id) {
+        if (msg.content === "!ping") {
+          msg.reply("Pong!");
+          continue;
+        }
       }
+      break;
     }
   }
 }
