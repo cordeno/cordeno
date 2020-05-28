@@ -2,7 +2,7 @@
 # Cordeno
 [![deno doc](https://img.shields.io/badge/deno-doc-blue?style=for-the-badge)](https://doc.deno.land/https/deno.land/x/cordeno/mod.ts)
 [![Discord](https://img.shields.io/discord/713653280638631976?color=%237289DA&label=Discord&style=for-the-badge)](https://discord.gg/WT2g6Mn)
-[![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=for-the-badge)](https://github.com/cordeno/cordeno/commits/master)  
+[![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=for-the-badge)](https://github.com/cordeno/cordeno)  
 An simplistic, event loop driven Discord API library for building powerful bots.  
 Powered by the [Deno runtime](https://deno.land/).  
 Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
