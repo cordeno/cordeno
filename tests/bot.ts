@@ -22,7 +22,9 @@ for await (const ctx of client) {
 
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
-          msg.reply("Pong!");
+          await msg.reply(`Pong!`);
+          await msg.reply(`Message author: ${msg.author.username}`);
+          await msg.reply(`Created at: ${msg.createdAt}`);
           continue;
         }
       }

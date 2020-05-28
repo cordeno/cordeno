@@ -5,7 +5,7 @@ import { Client } from "../Client.ts";
 import { AsyncEventQueue } from "../Queue.ts";
 
 export class WebSocketManager {
-  private socket!: WebSocket;
+  public socket!: WebSocket;
   private beatInterval!: number;
   private beatRecieved: boolean = true;
   public queue!: AsyncEventQueue<Payload>;

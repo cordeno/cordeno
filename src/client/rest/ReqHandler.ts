@@ -2,6 +2,8 @@ import { Discord } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
 
 export class ReqHandler {
+  private restRL: Map<any, any> = new Map();
+
   constructor(private token: string) {
   }
   async get(route: string) {
@@ -18,7 +20,7 @@ export class ReqHandler {
       method: "GET",
       headers,
     });
-    res = res.json();
+    res = await res.json();
     return res;
   }
 
@@ -29,17 +31,32 @@ export class ReqHandler {
         "User-Agent",
         `DiscordBot (https://deno.land/x/cordeno, ${Cordeno.Version})`,
       ],
-      ["X-RateLimit-Precision", "second"],
+      ["X-RateLimit-Precision", "millisecond"],
     ]);
     if (typeof body === "object") {
       headers.set("Content-Type", "application/json");
     }
     body = JSON.stringify(body);
-    const res = await fetch(Discord.Rest + route, {
+    let res = await fetch(Discord.Rest + route, {
       method: "POST",
       headers,
       body,
     });
+    const rateLimit = this.ratelimit(new Headers(res.headers));
+
+    res = await res.json();
     return res;
+  }
+
+  ratelimit(headers: Headers) {
+    const obj: { [k: string]: any } = {
+      global: headers.get("X-RateLimit-Global") || null,
+      limit: headers.get("X-RateLimit-Limit") || null,
+      remaining: headers.get("X-RateLimit-Remaining") || null,
+      reset: Number(headers.get("X-RateLimit-Reset")) || null,
+      resetAfter: headers.get("X-RateLimit-Reset-After") || null,
+      bucket: headers.get("X-RateLimit-Bucket") || null,
+    };
+    return obj;
   }
 }
