@@ -1,10 +1,8 @@
 ![Cordeno](https://raw.githubusercontent.com/cordeno/cordeno/master/assets/cordeno-200.gif)
 # Cordeno
 [![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno/mod.ts)  
-An simplistic, event loop driven Discord API library for building powerful bots.
-<br/>
-Powered by the [Deno runtime](https://deno.land/).
-<br/>
+An simplistic, event loop driven Discord API library for building powerful bots.  
+Powered by the [Deno runtime](https://deno.land/).  
 Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 
 # Development progress
