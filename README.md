@@ -51,7 +51,7 @@ After creating your file and pasting the above code, add your token and run
 deno run --allow-net --reload index.ts
 ```
 The `--reload` tag reinstalls all the dependencies in your project.
-You don't have to include `--reload` every run, but I recommend including it as an arguement at least once a day to keep cordeno up to date.
+You don't have to include `--reload` every run, but I recommend including it as an argument at least once a day to keep cordeno up to date.
 
 # Contributing
 Want to contribute? Follow the [Contributing Guide](https://github.com/cordeno/cordeno/blob/master/CONTRIBUTING.md)
