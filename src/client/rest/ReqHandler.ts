@@ -1,8 +1,10 @@
 import { Discord } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
+import { ReqQueue } from './ReqQueue.ts'
 
 export class ReqHandler {
   private restRL: Map<any, any> = new Map();
+  private queue = new Map<string, ReqQueue>()
 
   constructor(private token: string) {
   }
@@ -36,27 +38,23 @@ export class ReqHandler {
     if (typeof body === "object") {
       headers.set("Content-Type", "application/json");
     }
-    body = JSON.stringify(body);
-    let res = await fetch(Discord.Rest + route, {
-      method: "POST",
-      headers,
-      body,
-    });
-    const rateLimit = this.ratelimit(new Headers(res.headers));
 
-    res = await res.json();
-    return res;
-  }
+    const request = async () => {
+      body = JSON.stringify(body);
+      let res = await fetch(Discord.Rest + route, {
+        method: "POST",
+        headers,
+        body,
+      });
+    }
 
-  ratelimit(headers: Headers) {
-    const obj: { [k: string]: any } = {
-      global: headers.get("X-RateLimit-Global") || null,
-      limit: headers.get("X-RateLimit-Limit") || null,
-      remaining: headers.get("X-RateLimit-Remaining") || null,
-      reset: Number(headers.get("X-RateLimit-Reset")) || null,
-      resetAfter: headers.get("X-RateLimit-Reset-After") || null,
-      bucket: headers.get("X-RateLimit-Bucket") || null,
-    };
-    return obj;
+    if (!this.queue.get(route)) {
+      console.log(res.headers)
+      this.queue.set(route, new ReqQueue())
+    }
+    this.queue.get(route)?.add(request)
+
+    //res = await res.json();
+    //return res;
   }
 }
