@@ -4,13 +4,7 @@
  * This queue system is based off the source found under Dinocord: https://github.com/sunsetkookaburra/dinocord/blob/master/api/queue.ts
  * This code is registered under the MIT license: https://github.com/sunsetkookaburra/dinocord/blob/master/LICENCE
  */
-import { deferred } from "../../deps.ts";
-
-function sleep(ms: number) {
-  return new Promise((r) => {
-    setTimeout(r, ms);
-  });
-}
+import { DenoAsync } from "../../deps.ts";
 
 /** A simple queue with add and pop. */
 class Queue<T> {
@@ -38,7 +32,7 @@ export class AsyncEventQueue<T = any> {
   /** Whether the queue has been exited. */
   private isDone = false;
   /** Used to await for a new item. */
-  private newItem = deferred();
+  private newItem = DenoAsync.deferred();
   private queue = new Queue();
   constructor(
     private flowRate: number = 0,
@@ -62,13 +56,13 @@ export class AsyncEventQueue<T = any> {
         // yield the value
         yield this.queue.pop() as T;
         // wait for the desired time so as to act as 'flow control'
-        if (this.flowRate !== 0) await sleep(this.flowRate);
+        if (this.flowRate !== 0) await DenoAsync.delay(this.flowRate);
       } // else: there are no items in the queue currently
       else {
         // await next item to arrive in queue, or exit() as it resolves this promise
         await this.newItem;
         // reset the promise to be unresolved
-        this.newItem = deferred();
+        this.newItem = DenoAsync.deferred();
       }
       // if exit() was called this is true, and the generator exits.
       if (this.isDone) return;

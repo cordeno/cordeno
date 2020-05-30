@@ -4,7 +4,7 @@ import { ReqHandler } from "./rest/ReqHandler.ts";
 import * as Constructor from "./constructors/constructor_export.ts";
 
 export class Client {
-  private ws: WebSocketManager = new WebSocketManager(this);
+  ws: WebSocketManager = new WebSocketManager(this);
   http: ReqHandler;
   options!: CordenoOptions;
   public user!: Constructor.ClientInfo;
@@ -25,6 +25,7 @@ export class Client {
   }
 
   constructor(options: CordenoOptions) {
+    this.ws = this.ws
     this.options = options;
     if (!options.token) {
       throw new Error("A token must be specified when initiating `Client`");
