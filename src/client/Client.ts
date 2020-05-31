@@ -25,13 +25,12 @@ export class Client {
   }
 
   constructor(options: CordenoOptions) {
-    this.ws = this.ws
     this.options = options;
     if (!options.token) {
       throw new Error("A token must be specified when initiating `Client`");
     }
     this.ws.connect();
-    this.http = new ReqHandler(options.token);
+    this.http = new ReqHandler(this);
     this.user = new Constructor.ClientInfo(this);
   }
 
