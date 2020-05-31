@@ -8,7 +8,9 @@ export class ReqHandler {
   private restRL: Map<any, any> = new Map();
   private queue = new Map<string, ReqQueue>();
 
+
   constructor(private client: Client) {
+
   }
   async get(route: string) {
     const request: Request = new Request(route, {
@@ -24,7 +26,12 @@ export class ReqHandler {
       body,
       client: this.client,
     });
-    let res = await request.fire();
-    return res;
+    console.log(route)
+    if (!this.queue.has(route)) {
+      console.log('-')
+      this.queue.set(route, new ReqQueue(this.client))
+    }
+    console.log('--')
+    this.queue.get(route)?.push(request)
   }
 }

@@ -1,4 +1,5 @@
 import { Client } from "../Client.ts";
+import { Request } from './Request.ts'
 
 export class ReqQueue {
   private queue: Array<any> = [];
@@ -12,13 +13,33 @@ export class ReqQueue {
   constructor(private client: Client) {
   }
 
-  push(i: Function) {
-    if (this.length === 0) {
-      return this.execute(i);
+  push(req: Request) {
+    if (this.isBusy) {
+      console.log(1)
+      this.queue.push(req)
     }
-    this.queue.push(i);
-    this.length++;
+    else {
+      console.log(2)
+      return this.exec(req)
+    }
   }
-  execute(req: Function) {
+  exec(request: Request) {
+    return new Promise(async (resolve, reject) => {
+      if (this.isBusy) {
+        reject('Worker is busy.');
+      }
+
+      this.isBusy = true;
+
+      const limited: boolean = this.remaining <= 0 && Date.now() < this.reset
+
+      let res: Response = await request.fire()
+
+      console.log(res)
+      if (res && res.headers) {
+        console.log(res.headers)
+      }
+      return res
+    })
   }
 }
