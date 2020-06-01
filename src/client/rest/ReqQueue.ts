@@ -54,10 +54,8 @@ export class ReqQueue {
 
         this.limit = limit ? Number(limit) : Infinity;
         this.remaining = remaining ? Number(remaining) : 1;
-        this.reset = reset
-          ? (new Date(Number(reset)).getTime()) -
-            (new Date(String(date)).getTime() - Date.now())
-          : Date.now();
+        // deno-fmt-ignore
+        this.reset = reset ? (new Date(Number(reset)).getTime()) - (new Date(String(date)).getTime() - Date.now()) : Date.now();
         this.resetAfter = resetAfter ? Number(resetAfter) : -1;
       }
 
