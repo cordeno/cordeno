@@ -5,7 +5,6 @@ import { ReqQueue } from "./ReqQueue.ts";
 import { Request } from "./Request.ts";
 
 export class ReqHandler {
-  private restRL: Map<any, any> = new Map();
   private queue = new Map<string, ReqQueue>();
 
   constructor(private client: Client) {
