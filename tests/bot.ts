@@ -39,7 +39,6 @@ for await (const ctx of client) {
           await msg.reply(`10`);
           await msg.reply(`11`);
 
-
           continue;
         }
       }
