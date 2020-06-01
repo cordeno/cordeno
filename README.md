@@ -10,7 +10,9 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be inplemented.
-Breaking changes may occur at any time without prior warning.
+Breaking changes may occur at any time without prior warning.  
+Current master branch version: `0.2.0`  
+Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)
 
 # Example:
 index.ts
