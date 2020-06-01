@@ -26,12 +26,9 @@ export class ReqHandler {
       body,
       client: this.client,
     });
-    console.log(route)
     if (!this.queue.has(route)) {
-      console.log('-')
       this.queue.set(route, new ReqQueue(this.client))
     }
-    console.log('--')
     this.queue.get(route)?.push(request)
   }
 }

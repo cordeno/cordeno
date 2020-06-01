@@ -25,6 +25,21 @@ for await (const ctx of client) {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
+          await msg.reply(`-`);
+          await msg.reply(`--`);
+          await msg.reply(`1`);
+          await msg.reply(`2`);
+          await msg.reply(`3`);
+          await msg.reply(`4`);
+          await msg.reply(`5`);
+          await msg.reply(`6`);
+          await msg.reply(`7`);
+          await msg.reply(`8`);
+          await msg.reply(`9`);
+          await msg.reply(`10`);
+          await msg.reply(`11`);
+
+
           continue;
         }
       }

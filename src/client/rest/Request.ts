@@ -27,7 +27,7 @@ export class Request {
         "User-Agent",
         `DiscordBot (https://deno.land/x/cordeno, ${Cordeno.Version})`,
       ],
-      ["X-RateLimit-Precision", "second"],
+      ["X-RateLimit-Precision", "millisecond"],
     ]);
 
     let body;
