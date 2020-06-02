@@ -10,6 +10,6 @@ export class Ready implements Interfaces.Ready {
   session_id!: string;
   shard!: [number, number];
 
-  constructor(public client: Client, public payload: any) {
+  constructor(private client: Client, private payload: any) {
   }
 }

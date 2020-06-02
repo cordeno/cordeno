@@ -8,16 +8,18 @@ export class WebSocketManager {
   public socket!: WebSocket;
   private beatInterval!: number;
   private beatRecieved: boolean = true;
-  public queue!: AsyncEventQueue<Payload>;
+  private q!: AsyncEventQueue<Payload>;
+  public queue!: any;
   constructor(private client: Client) {
-    this.queue = new AsyncEventQueue();
+    this.q = new AsyncEventQueue();
+    this.queue = this.q.queue();
   }
   async connect() {
     this.socket = await connectWebSocket(Discord.Endpoint);
     for await (const msg of this.socket) {
       if (typeof msg === "string") {
         const payload: Payload = JSON.parse(msg.toString());
-        this.queue.post(payload);
+        this.q.post(payload);
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();

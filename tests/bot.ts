@@ -1,12 +1,10 @@
-import { Client, Message, Ready } from "../mod.ts";
+import { Client, Message, Ready, Ratelimit } from "../mod.ts";
 import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
 const env = dotenv.config();
 
 const client = new Client({
   token: env.TOKEN,
 });
-
-console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   switch (ctx.event) {
@@ -17,6 +15,13 @@ for await (const ctx of client) {
       console.log("Discord websocket API version is " + ready.v);
       break;
     }
+    case "RATELIMIT": {
+      const ratelimit: Ratelimit = ctx;
+      console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
+      // deno-fmt-ignore
+      console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10} seconds`);
+      break;
+    }
     case "MESSAGE_CREATE": {
       const msg: Message = ctx;
 
@@ -25,21 +30,10 @@ for await (const ctx of client) {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
-          await msg.reply(`-`);
-          await msg.reply(`--`);
-          await msg.reply(`1`);
-          await msg.reply(`2`);
-          await msg.reply(`3`);
-          await msg.reply(`4`);
-          await msg.reply(`5`);
-          await msg.reply(`6`);
-          await msg.reply(`7`);
-          await msg.reply(`8`);
-          await msg.reply(`9`);
-          await msg.reply(`10`);
-          await msg.reply(`11`);
-
           continue;
+        }
+        if (msg.content === "!cordeno") {
+          await msg.reply(`Cordeno version: v${client.version}`);
         }
       }
       break;

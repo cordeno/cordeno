@@ -65,6 +65,13 @@ export class ReqQueue {
         resolve(res);
         return this.run();
       } else if (res.status === 429) {
+        this.client.event.post({
+          t: "RATELIMIT",
+          d: {
+            route: request.route,
+            resetIn: this.resetAfter,
+          },
+        });
         this.queue.unshift(request);
         await DenoAsync.delay(this.resetAfter);
         return this.run();

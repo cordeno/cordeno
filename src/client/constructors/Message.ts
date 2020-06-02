@@ -13,7 +13,7 @@ export class Message {
   public content!: string;
   public member!: Interfaces.GuildMember | null;
 
-  constructor(public client: Client, public payload: any) {
+  constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = payload.d;
     this.author = data.author;
     this.createdAt = new Date(data.timestamp);
