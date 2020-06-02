@@ -54,10 +54,8 @@ export class ReqQueue {
 
         this.limit = limit ? Number(limit) : Infinity;
         this.remaining = remaining ? Number(remaining) : 1;
-        this.reset = reset
-          ? (new Date(Number(reset)).getTime()) -
-            (new Date(String(date)).getTime() - Date.now())
-          : Date.now();
+        // deno-fmt-ignore
+        this.reset = reset ? (new Date(Number(reset)).getTime()) - (new Date(String(date)).getTime() - Date.now()) : Date.now();
         this.resetAfter = resetAfter ? Number(resetAfter) : -1;
       }
 
@@ -67,6 +65,13 @@ export class ReqQueue {
         resolve(res);
         return this.run();
       } else if (res.status === 429) {
+        this.client.event.post({
+          t: "RATELIMIT",
+          d: {
+            route: request.route,
+            resetIn: this.resetAfter,
+          },
+        });
         this.queue.unshift(request);
         await DenoAsync.delay(this.resetAfter);
         return this.run();

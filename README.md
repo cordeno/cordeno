@@ -11,13 +11,13 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
-Current master branch version: `0.2.0`  
+Current master branch version: `0.2.1`  
 Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)
 
 # Example:
 index.ts
 ```ts
-import { Client, Message, Ready } from "https://deno.land/x/cordeno/mod.ts";
+import { Client, Message, Ready, Ratelimit } from "https://deno.land/x/cordeno/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -34,6 +34,13 @@ for await (const ctx of client) {
       console.log("Discord websocket API version is " + ready.v);
       break;
     }
+    case "RATELIMIT": {
+      const ratelimit: Ratelimit = ctx;
+      console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
+      // deno-fmt-ignore
+      console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10} seconds`);
+      break;
+    }
     case "MESSAGE_CREATE": {
       const msg: Message = ctx;
 
@@ -43,6 +50,9 @@ for await (const ctx of client) {
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
           continue;
+        }
+        if (msg.content === "!cordeno") {
+          await msg.reply(`Cordeno version: v${client.version}`);
         }
       }
       break;

@@ -33,14 +33,14 @@ export class AsyncEventQueue<T = any> {
   private isDone = false;
   /** Used to await for a new item. */
   private newItem = DenoAsync.deferred();
-  private queue = new Queue();
+  private _queue = new Queue();
   constructor(
     private flowRate: number = 0,
     private handler?: (item: T) => void,
   ) {}
   /** Post an event to the queue. */
   post(item: T) {
-    this.queue.add(item);
+    this._queue.add(item);
     this.newItem.resolve();
   }
   /** Stop serving events. */
@@ -48,13 +48,13 @@ export class AsyncEventQueue<T = any> {
     this.isDone = true;
     this.newItem.resolve();
   }
-  /** used for for-await-of */
-  async *[Symbol.asyncIterator]() {
+
+  async *queue() {
     while (1) {
       // if there are items in the queue, pop them one by one.
-      if (this.queue.length > 0) {
+      if (this._queue.length > 0) {
         // yield the value
-        yield this.queue.pop() as T;
+        yield this._queue.pop() as T;
         // wait for the desired time so as to act as 'flow control'
         if (this.flowRate !== 0) await DenoAsync.delay(this.flowRate);
       } // else: there are no items in the queue currently
@@ -66,11 +66,6 @@ export class AsyncEventQueue<T = any> {
       }
       // if exit() was called this is true, and the generator exits.
       if (this.isDone) return;
-    }
-  }
-  async run() {
-    for await (const item of this) {
-      if (this.handler !== undefined) this.handler(item);
     }
   }
 }
