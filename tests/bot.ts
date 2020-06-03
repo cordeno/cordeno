@@ -25,12 +25,11 @@ for await (const ctx of client) {
 
     case "HEARTBEAT": {
       const heartbeat: Heartbeat = ctx;
+      // deno-fmt-ignore
       console.log(
         "Heartbeat recieved: \n" +
-          `=>total: ${heartbeat.total}\n=>rate: ${Math.round(
-            heartbeat.rate / 1000 * 10,
-          ) / 10}s`,
-      );
+        `=>total: ${heartbeat.total}\n=>rate: ${Math.round(heartbeat.rate / 1000 * 10) / 10}s`
+        );
       break;
     }
     case "MESSAGE_CREATE": {

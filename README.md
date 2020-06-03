@@ -17,7 +17,7 @@ Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)
 # Example:
 index.ts
 ```ts
-import { Client, Message, Ready, Ratelimit } from "https://deno.land/x/cordeno@v0.2.2/mod.ts";
+import { Client, Message, Ready, Ratelimit, Heartbeat } from "https://deno.land/x/cordeno@v0.2.2/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -31,14 +31,24 @@ for await (const ctx of client) {
       const ready: Ready = ctx;
 
       console.log("Cordeno is now ready!");
-      console.log("Discord websocket API version is " + ready.v);
+      console.log("Discord websocket API version is " + ready.gatewayVersion);
       break;
     }
     case "RATELIMIT": {
       const ratelimit: Ratelimit = ctx;
       console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
       // deno-fmt-ignore
-      console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10} seconds`);
+      console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10}s`);
+      break;
+    }
+
+    case "HEARTBEAT": {
+      const heartbeat: Heartbeat = ctx;
+      // deno-fmt-ignore
+      console.log(
+        "Heartbeat recieved: \n" +
+        `=>total: ${heartbeat.total}\n=>rate: ${Math.round(heartbeat.rate / 1000 * 10) / 10}s`
+        );
       break;
     }
     case "MESSAGE_CREATE": {
