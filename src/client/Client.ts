@@ -16,21 +16,27 @@ export class Client {
 
   private async *[Symbol.asyncIterator]() {
     for await (const payload of this.mux) {
-      switch (payload.t) {
+      switch (payload.event) {
         /* Discord API events */
         case "READY": {
+          // deno-fmt-ignore
           yield Constructor.ClientEvent(new Constructor.Ready(this, payload));
           break;
         }
         case "MESSAGE_CREATE": {
+          // deno-fmt-ignore
           yield Constructor.ClientEvent(new Constructor.Message(this, payload));
           break;
         }
         /* Client events */
+        case "HEARTBEAT": {
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Heartbeat(this, payload))
+          break;
+        }
         case "RATELIMIT": {
-          yield Constructor.ClientEvent(
-            new Constructor.Ratelimit(this, payload),
-          );
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Ratelimit(this, payload));
           break;
         }
       }
@@ -43,7 +49,6 @@ export class Client {
       throw new Error("A token must be specified when initiating `Client`");
     }
     this.ws.connect();
-    this.mux.add(this.ws.queue);
     this.http = new ReqHandler(this);
     this.mux.add(this.event.queue());
     this.user = new Constructor.ClientInfo(this);

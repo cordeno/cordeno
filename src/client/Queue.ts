@@ -3,6 +3,7 @@
 /**
  * This queue system is based off the source found under Dinocord: https://github.com/sunsetkookaburra/dinocord/blob/master/api/queue.ts
  * This code is registered under the MIT license: https://github.com/sunsetkookaburra/dinocord/blob/master/LICENCE
+ * It has been modified from its original form
  */
 import { DenoAsync } from "../../deps.ts";
 
@@ -39,8 +40,11 @@ export class AsyncEventQueue<T = any> {
     private handler?: (item: T) => void,
   ) {}
   /** Post an event to the queue. */
-  post(item: T) {
-    this._queue.add(item);
+  post(event: string = "UNKNOWN", item: T) {
+    this._queue.add({
+      event,
+      ...item,
+    });
     this.newItem.resolve();
   }
   /** Stop serving events. */
