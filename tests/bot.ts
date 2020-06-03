@@ -40,6 +40,7 @@ for await (const ctx of client) {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
+          await msg.reply(`Client name: ${client.user.name}`)
           continue;
         }
         if (msg.content === "!cordeno") {
