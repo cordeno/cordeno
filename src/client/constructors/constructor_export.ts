@@ -1,3 +1,4 @@
+export * from "./Heartbeat.ts";
 export * from "./Message.ts";
 export * from "./Ratelimit.ts";
 export * from "./Ready.ts";

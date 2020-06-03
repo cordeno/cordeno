@@ -1,23 +1,23 @@
-![Cordeno](https://raw.githubusercontent.com/cordeno/cordeno/master/assets/cordeno-200.gif)
+![Cordeno](assets/cordeno-200.gif)
 # Cordeno
-[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno/mod.ts)
+[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.2.2/mod.ts)
 [![GitHub stars](https://img.shields.io/github/stars/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno)
 [![Discord](https://img.shields.io/discord/713653280638631976?color=%237289DA&label=discord&style=flat)](https://discord.gg/WT2g6Mn)
 [![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno/commits/)  
-An simplistic, event loop driven Discord API library for building powerful bots.  
+An simplistic, event loop driven [Discord API](https://discord.com/developers/docs/reference) library for building powerful bots.  
 Powered by the [Deno runtime](https://deno.land/).  
 Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
-Current master branch version: `0.2.1`  
+Current master branch version: `0.2.2`  
 Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)
 
 # Example:
 index.ts
 ```ts
-import { Client, Message, Ready, Ratelimit } from "https://deno.land/x/cordeno/mod.ts";
+import { Client, Message, Ready, Ratelimit } from "https://deno.land/x/cordeno@v0.2.2/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",

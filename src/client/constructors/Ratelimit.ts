@@ -6,7 +6,7 @@ export class Ratelimit {
   public resetIn!: number;
 
   constructor(private client: Client, private payload: any) {
-    this.route = this.payload.d.route;
-    this.resetIn = this.payload.d.resetIn;
+    this.route = this.payload.route;
+    this.resetIn = this.payload.resetIn;
   }
 }

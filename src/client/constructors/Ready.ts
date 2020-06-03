@@ -1,15 +1,20 @@
 import { Client } from "../Client.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
-export class Ready implements Interfaces.Ready {
-  public event!: string;
-  v!: number;
-  user!: Interfaces.User;
-  private_channels!: Array<any>;
-  guilds!: Array<Interfaces.Guild>;
-  session_id!: string;
-  shard!: [number, number];
+export class Ready {
+  public gatewayVersion!: number;
+  public user!: Interfaces.User;
+  public privateChannels!: Array<any>;
+  public unavailableGuilds!: Array<Interfaces.Guild>;
+  public sessionID!: string;
+  public shard!: [number, number];
 
   constructor(private client: Client, private payload: any) {
+    this.gatewayVersion = payload.d.v;
+    this.user = payload.d.user;
+    this.privateChannels = payload.d.private_channels;
+    this.unavailableGuilds = payload.d.guilds;
+    this.sessionID = payload.d.session_id;
+    this.shard = payload.d.shard;
   }
 }
