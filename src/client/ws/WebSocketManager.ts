@@ -53,9 +53,9 @@ export class WebSocketManager {
             break;
           }
           case OPCODE.Reconnect: {
-            console.log('Gateway host migrated. Reconnecting...')
-            await this.reconnect()
-            console.log('Migrated!')
+            console.log("Gateway host migrated. Reconnecting...");
+            await this.reconnect();
+            console.log("Migrated!");
             break;
           }
           case OPCODE.InvalidSession: {
@@ -87,7 +87,7 @@ export class WebSocketManager {
   async identify() {
     const opts = this.client.cache.get("client");
     if (this.status === "reconnecting") {
-      console.log('Reconnecting')
+      console.log("Reconnecting");
       return this.resume();
     }
     this.status = "connected";
@@ -105,13 +105,13 @@ export class WebSocketManager {
   }
 
   async resume() {
-    console.log('Resuming')
+    console.log("Resuming");
     const opts = this.client.cache.get("client");
     console.log(`
     token: ${opts.token}
     sessionid: ${opts.sessionID}
     sequence: ${opts.sequence}
-    `)
+    `);
     this.status = "connected";
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
