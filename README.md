@@ -1,6 +1,6 @@
 ![Cordeno](assets/cordeno-200.gif)
 # Cordeno
-[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.2.2/mod.ts)
+[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts)
 [![GitHub stars](https://img.shields.io/github/stars/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno)
 [![Discord](https://img.shields.io/discord/713653280638631976?color=%237289DA&label=discord&style=flat)](https://discord.gg/WT2g6Mn)
 [![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno/commits/)  
@@ -11,13 +11,22 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
-Current master branch version: `0.2.2`  
-Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)
+Current master branch version: `0.3.0`  
+Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)  
+All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts)
 
 # Example:
 index.ts
 ```ts
-import { Client, Message, Ready, Ratelimit, Heartbeat } from "https://deno.land/x/cordeno@v0.2.2/mod.ts";
+import {
+  Client,
+  Message,
+  Ready,
+  Ratelimit,
+  Heartbeat,
+  Resumed,
+  InvalidSession,
+} from "https://deno.land/x/cordeno@v0.3.0/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -32,7 +41,27 @@ for await (const ctx of client) {
 
       console.log("Cordeno is now ready!");
       console.log("Discord websocket API version is " + ready.gatewayVersion);
+
+      // Sets client presence
+      client.user.setPresence({
+        status: "online",
+        game: {
+          name: "Taking over the world!",
+          type: "playing",
+        },
+      });
       break;
+    }
+    case "RESUMED": {
+      const resumed: Resumed = ctx;
+      console.log(`Resumed at: ${resumed.resumeTime}`);
+      break;
+    }
+    case "INVALID_SESSION": {
+      const session: InvalidSession = ctx;
+      console.log(
+        `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
+      );
     }
     case "RATELIMIT": {
       const ratelimit: Ratelimit = ctx;
@@ -53,12 +82,12 @@ for await (const ctx of client) {
     }
     case "MESSAGE_CREATE": {
       const msg: Message = ctx;
-
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
+          await msg.reply(`Client name: ${client.user.name}`);
           continue;
         }
         if (msg.content === "!cordeno") {

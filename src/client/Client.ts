@@ -10,7 +10,8 @@ export class Client {
   http: ReqHandler;
   options!: CordenoOptions;
   event: AsyncEventQueue = new AsyncEventQueue();
-  public user!: Constructor.ClientInfo;
+  cache = new Map<string, any>();
+  public user!: Constructor.ClientUser;
 
   private mux = new DenoAsync.MuxAsyncIterator<any>();
 
@@ -21,6 +22,16 @@ export class Client {
         case "READY": {
           // deno-fmt-ignore
           yield Constructor.ClientEvent(new Constructor.Ready(this, payload));
+          break;
+        }
+        case "RESUMED": {
+          yield Constructor.ClientEvent(new Constructor.Resumed(this, payload));
+          break;
+        }
+        case "INVALID_SESSION": {
+          yield Constructor.ClientEvent(
+            new Constructor.InvalidSession(this, payload),
+          );
           break;
         }
         case "MESSAGE_CREATE": {
@@ -48,10 +59,15 @@ export class Client {
     if (!options.token) {
       throw new Error("A token must be specified when initiating `Client`");
     }
+    this.cache.set("client", {
+      sessionID: null,
+      sequence: null,
+      token: this.options.token,
+    });
     this.ws.connect();
     this.http = new ReqHandler(this);
     this.mux.add(this.event.queue());
-    this.user = new Constructor.ClientInfo(this);
+    this.user = new Constructor.ClientUser(this);
   }
 
   get version(): string {

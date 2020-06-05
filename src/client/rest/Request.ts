@@ -12,7 +12,7 @@ interface Options {
 export class Request {
   constructor(
     public route: string,
-    private options: Options = {
+    public options: Options = {
       method: "GET",
       body: null,
       client: null,

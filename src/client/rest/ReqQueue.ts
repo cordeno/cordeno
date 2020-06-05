@@ -41,7 +41,6 @@ export class ReqQueue {
       if (ratelimit) {
         await DenoAsync.delay(this.reset - Date.now());
       }
-
       let res: Response = await request.fire();
 
       if (res && res.headers) {
@@ -62,7 +61,12 @@ export class ReqQueue {
       this.isBusy = false;
 
       if (res.ok) {
-        resolve(res);
+        if (request.options.method === "GET") {
+          res = await res.json();
+          resolve(res);
+        } else {
+          resolve(res);
+        }
         return this.run();
       } else if (res.status === 429) {
         this.client.event.post("RATELIMIT", {

@@ -1,4 +1,5 @@
 import { Client } from "../Client.ts";
+import { OPCODE } from "../constant/discord.ts";
 
 interface IClientInfo {
   id: string;
@@ -16,7 +17,18 @@ interface IClientInfo {
   public_flags?: number;
 }
 
-export class ClientInfo {
+interface Presence {
+  since?: number;
+  game?: {
+    name: string;
+    type: "playing" | "streaming" | "listening" | number;
+    url?: string;
+  };
+  status?: "online" | "dnd" | "idle" | "invisible" | "offline";
+  afk?: boolean;
+}
+
+export class ClientUser {
   private _client!: IClientInfo;
   constructor(private client: Client) {
     this.init();
@@ -39,5 +51,25 @@ export class ClientInfo {
   }
   get bot() {
     return this._client.bot;
+  }
+
+  setPresence(options: Presence) {
+    switch (options.game?.type) {
+      case "playing": {
+        options.game.type = 0;
+        break;
+      }
+      case "streaming": {
+        options.game.type = 1;
+        break;
+      }
+      case "listening": {
+        options.game.type = 2;
+      }
+    }
+    return this.client.ws.socket.send(JSON.stringify({
+      op: OPCODE.PresenceUpdate,
+      d: { ...options, since: null, afk: false, status: "online" },
+    }));
   }
 }

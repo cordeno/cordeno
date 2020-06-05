@@ -1,4 +1,12 @@
-import { Client, Message, Ready, Ratelimit, Heartbeat } from "../mod.ts";
+import {
+  Client,
+  Message,
+  Ready,
+  Ratelimit,
+  Heartbeat,
+  Resumed,
+  InvalidSession,
+} from "../mod.ts";
 import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
 const env = dotenv.config();
 
@@ -13,7 +21,27 @@ for await (const ctx of client) {
 
       console.log("Cordeno is now ready!");
       console.log("Discord websocket API version is " + ready.gatewayVersion);
+
+      // Sets client presence
+      client.user.setPresence({
+        status: "online",
+        game: {
+          name: "Taking over the world!",
+          type: "playing",
+        },
+      });
       break;
+    }
+    case "RESUMED": {
+      const resumed: Resumed = ctx;
+      console.log(`Resumed at: ${resumed.resumeTime}`);
+      break;
+    }
+    case "INVALID_SESSION": {
+      const session: InvalidSession = ctx;
+      console.log(
+        `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
+      );
     }
     case "RATELIMIT": {
       const ratelimit: Ratelimit = ctx;
@@ -34,12 +62,12 @@ for await (const ctx of client) {
     }
     case "MESSAGE_CREATE": {
       const msg: Message = ctx;
-
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
+          await msg.reply(`Client name: ${client.user.name}`);
           continue;
         }
         if (msg.content === "!cordeno") {
