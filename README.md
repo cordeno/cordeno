@@ -13,7 +13,7 @@ Cordeno is still in its **early stages of development**, and is not production r
 Breaking changes may occur at any time without prior warning.  
 Current master branch version: `0.3.0`  
 Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)  
-All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts)
+All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts).
 
 # Example:
 index.ts
