@@ -52,6 +52,12 @@ export class WebSocketManager {
             this.heartbeat.recieved = true;
             break;
           }
+          case OPCODE.Reconnect: {
+            console.log('Gateway host migrated. Reconnecting...')
+            await this.reconnect()
+            console.log('Migrated!')
+            break;
+          }
           case OPCODE.InvalidSession: {
             this.client.event.post("INVALID_SESSION", payload);
             await DenoAsync.delay(5000);
