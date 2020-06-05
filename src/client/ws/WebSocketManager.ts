@@ -52,6 +52,10 @@ export class WebSocketManager {
             this.heartbeat.recieved = true;
             break;
           }
+          case OPCODE.Reconnect: {
+            await this.reconnect();
+            break;
+          }
           case OPCODE.InvalidSession: {
             this.client.event.post("INVALID_SESSION", payload);
             await DenoAsync.delay(5000);
@@ -64,7 +68,6 @@ export class WebSocketManager {
           }
         }
       } else if (isWebSocketCloseEvent(msg)) {
-        console.log(1);
         return this.connectionClosed(msg.code);
       }
     }
@@ -148,23 +151,28 @@ export class WebSocketManager {
 
   // Fired when the socket is disconnected
   async connectionClosed(code: number) {
+    console.log(`Error code: ${code}`);
+    console.log(
+      "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
+    );
     switch (code) {
-      case 4000:
-      case 4007: {
+      case 4000: // Unknown error
+      case 4007: // Invalid seq
+      case 4009: { // Session timed out
         this.reconnect(true);
         break;
       }
-      case 4001:
-      case 4002:
-      case 4003: {
+      case 4001: // Unknown opcode
+      case 4002: // Decode error
+      case 4003: { // Not authenticated
         this.reconnect();
         break;
       }
-      case 4008: {
+      case 4008: { // Rate limited
         err(new Error("A rate limit occured that could not be handled!"));
         break;
       }
-      case 4004: {
+      case 4004: { // Authentication failed
         err(new Error("An invalid token was provided!"));
         break;
       }
