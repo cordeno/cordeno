@@ -152,22 +152,23 @@ export class WebSocketManager {
       "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
     );
     switch (code) {
-      case 4000:
-      case 4007: {
+      case 4000: // Unknown error	
+      case 4007: { // Invalid seq	
         this.reconnect(true);
         break;
       }
-      case 4001:
-      case 4002:
-      case 4003: {
+      case 4001: // Unknown opcode	
+      case 4002: // Decode error	
+      case 4003: // Not authenticated	
+      case 4009: { // Session timed out	
         this.reconnect();
         break;
       }
-      case 4008: {
+      case 4008: { // Rate limited
         err(new Error("A rate limit occured that could not be handled!"));
         break;
       }
-      case 4004: {
+      case 4004: { // Authentication failed	
         err(new Error("An invalid token was provided!"));
         break;
       }
