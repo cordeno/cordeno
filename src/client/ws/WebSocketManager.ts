@@ -64,7 +64,6 @@ export class WebSocketManager {
           }
         }
       } else if (isWebSocketCloseEvent(msg)) {
-        console.log(1);
         return this.connectionClosed(msg.code);
       }
     }
@@ -148,6 +147,8 @@ export class WebSocketManager {
 
   // Fired when the socket is disconnected
   async connectionClosed(code: number) {
+    console.log(`Error code: ${code}`);
+    console.log('Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes')
     switch (code) {
       case 4000:
       case 4007: {
