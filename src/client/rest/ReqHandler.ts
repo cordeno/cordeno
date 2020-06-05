@@ -10,15 +10,15 @@ export class ReqHandler {
   constructor(private client: Client) {
   }
   async get(route: string): Promise<any> {
-      const request: Request = new Request(route, {
-        method: "GET",
-        client: this.client,
-      });
-      if (!this.queue.has(route)) {
-        this.queue.set(route, new ReqQueue(this.client));
-      }
-      let res = await this.queue.get(route)?.push(request)
-      return res
+    const request: Request = new Request(route, {
+      method: "GET",
+      client: this.client,
+    });
+    if (!this.queue.has(route)) {
+      this.queue.set(route, new ReqQueue(this.client));
+    }
+    let res = await this.queue.get(route)?.push(request);
+    return res;
   }
 
   async post(route: string, body?: object | string) {

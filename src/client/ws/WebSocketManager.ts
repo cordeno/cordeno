@@ -1,7 +1,17 @@
-import { connectWebSocket, WebSocket } from "../../../deps.ts";
+import {
+  connectWebSocket,
+  WebSocket,
+  DenoAsync,
+  isWebSocketCloseEvent,
+} from "../../../deps.ts";
 import { Discord, Payload, OPCODE } from "../constant/discord.ts";
 import { Cordeno } from "../constant/cordeno.ts";
 import { Client } from "../Client.ts";
+
+function err(error: any) {
+  console.log("\x1b[31m", error, "\x1b[0m");
+  Deno.exit();
+}
 
 export class WebSocketManager {
   public socket!: WebSocket;
@@ -11,12 +21,14 @@ export class WebSocketManager {
     rate: 0,
     total: 0,
   };
+  private status: string = "connecting";
   constructor(private client: Client) {
   }
 
   // Connects to API
   async connect() {
     this.socket = await connectWebSocket(Discord.Endpoint);
+
     for await (const msg of this.socket) {
       if (typeof msg === "string") {
         const payload: Payload = JSON.parse(msg.toString());
@@ -24,6 +36,7 @@ export class WebSocketManager {
         if (payload.op === OPCODE.Dispatch) {
           this.client.event.post(payload.t, payload);
         }
+        if (payload.s) this.client.cache.get("client").sequence = payload.s;
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();
@@ -39,29 +52,61 @@ export class WebSocketManager {
             this.heartbeat.recieved = true;
             break;
           }
+          case OPCODE.InvalidSession: {
+            this.client.event.post("INVALID_SESSION", payload);
+            await DenoAsync.delay(5000);
+            if (payload.d === true) {
+              this.reconnect();
+            } else {
+              this.reconnect(true);
+            }
+            break;
+          }
         }
-      } else {
+      } else if (isWebSocketCloseEvent(msg)) {
+        console.log(1);
+        return this.connectionClosed(msg.code);
       }
     }
   }
 
   // Reconnects to API
-  async reconnect() {
+  async reconnect(fresh: boolean = false) {
     this.panic();
+    if (!fresh) this.status = "reconnecting";
+    else this.status = "connecting";
     this.connect();
   }
 
   // Indentifies client to discord
   async identify() {
-    this.socket.send(JSON.stringify({
+    const opts = this.client.cache.get("client");
+    if (this.status === "reconnecting") {
+      return this.resume();
+    }
+    this.status = "connected";
+    return this.socket.send(JSON.stringify({
       op: OPCODE.Identify,
       d: {
-        token: this.client.options.token,
+        token: opts.token,
         properties: {
           $os: "linux",
           $browser: `${Cordeno.Name} v${Cordeno.Version}`,
           $device: `${Cordeno.Name} v${Cordeno.Version}`,
         },
+      },
+    }));
+  }
+
+  async resume() {
+    const opts = this.client.cache.get("client");
+    this.status = "connected";
+    return this.socket.send(JSON.stringify({
+      op: OPCODE.Resume,
+      d: {
+        token: opts.token,
+        session_id: opts.sessionID,
+        seq: opts.sequence,
       },
     }));
   }
@@ -95,8 +140,34 @@ export class WebSocketManager {
 
   // Fired when something went wrong
   async panic() {
+    this.status = "panick";
     this.heartbeat.recieved = true;
     if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
     if (!this.socket.isClosed) this.socket.close();
+  }
+
+  // Fired when the socket is disconnected
+  async connectionClosed(code: number) {
+    switch (code) {
+      case 4000:
+      case 4007: {
+        this.reconnect(true);
+        break;
+      }
+      case 4001:
+      case 4002:
+      case 4003: {
+        this.reconnect();
+        break;
+      }
+      case 4008: {
+        err(new Error("A rate limit occured that could not be handled!"));
+        break;
+      }
+      case 4004: {
+        err(new Error("An invalid token was provided!"));
+        break;
+      }
+    }
   }
 }

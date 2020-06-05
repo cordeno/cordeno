@@ -62,10 +62,9 @@ export class ReqQueue {
 
       if (res.ok) {
         if (request.options.method === "GET") {
-          res = await res.json()
-          resolve(res)
-        }
-        else {
+          res = await res.json();
+          resolve(res);
+        } else {
           resolve(res);
         }
         return this.run();
