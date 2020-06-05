@@ -1,6 +1,6 @@
 ![Cordeno](assets/cordeno-200.gif)
 # Cordeno
-[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.1/mod.ts)
+[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts)
 [![GitHub stars](https://img.shields.io/github/stars/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno)
 [![Discord](https://img.shields.io/discord/713653280638631976?color=%237289DA&label=discord&style=flat)](https://discord.gg/WT2g6Mn)
 [![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno/commits/)  
@@ -11,23 +11,22 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
-Current master branch version: `0.3.1`  
+Current master branch version: `0.3.0`  
 Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)  
-All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.1/mod.ts).
+All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.0/mod.ts)
 
 # Example:
 index.ts
 ```ts
 import {
   Client,
-  MESSAGE_CREATE,
-  READY,
-  RATELIMIT,
-  HEARTBEAT,
-  RESUMED,
-  INVALID_SESSION,
-  ev,
-} from "https://deno.land/x/cordeno@v0.3.1/mod.ts";
+  Message,
+  Ready,
+  Ratelimit,
+  Heartbeat,
+  Resumed,
+  InvalidSession,
+} from "https://deno.land/x/cordeno@v0.3.0/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -37,8 +36,8 @@ console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   switch (ctx.event) {
-    case ev.Ready: {
-      const ready: READY = ctx;
+    case "READY": {
+      const ready: Ready = ctx;
 
       console.log("Cordeno is now ready!");
       console.log("Discord websocket API version is " + ready.gatewayVersion);
@@ -53,27 +52,27 @@ for await (const ctx of client) {
       });
       break;
     }
-    case ev.Resumed: {
-      const resumed: RESUMED = ctx;
+    case "RESUMED": {
+      const resumed: Resumed = ctx;
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }
-    case ev.InvalidSession: {
-      const session: INVALID_SESSION = ctx;
+    case "INVALID_SESSION": {
+      const session: InvalidSession = ctx;
       console.log(
         `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
       );
     }
-    case ev.Ratelimit: {
-      const ratelimit: RATELIMIT = ctx;
+    case "RATELIMIT": {
+      const ratelimit: Ratelimit = ctx;
       console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
       // deno-fmt-ignore
       console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10}s`);
       break;
     }
 
-    case ev.Heartbeat: {
-      const heartbeat: HEARTBEAT = ctx;
+    case "HEARTBEAT": {
+      const heartbeat: Heartbeat = ctx;
       // deno-fmt-ignore
       console.log(
         "Heartbeat recieved: \n" +
@@ -81,8 +80,8 @@ for await (const ctx of client) {
         );
       break;
     }
-    case ev.Message: {
-      const msg: MESSAGE_CREATE = ctx;
+    case "MESSAGE_CREATE": {
+      const msg: Message = ctx;
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);

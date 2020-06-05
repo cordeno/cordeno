@@ -1,7 +1,7 @@
 import { Client } from "../Client.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
-export class RATELIMIT {
+export class Ratelimit {
   public route!: string;
   public resetIn!: number;
 

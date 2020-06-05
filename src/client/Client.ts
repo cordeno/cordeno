@@ -17,10 +17,39 @@ export class Client {
 
   private async *[Symbol.asyncIterator]() {
     for await (const payload of this.mux) {
-      try {
-        // @ts-ignore deno-fmt-ignore
-        yield Constructor.ClientEvent(new Constructor[payload.event](this, payload));
-      } catch (e) {
+      switch (payload.event) {
+        /* Discord API events */
+        case "READY": {
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Ready(this, payload));
+          break;
+        }
+        case "RESUMED": {
+          yield Constructor.ClientEvent(new Constructor.Resumed(this, payload));
+          break;
+        }
+        case "INVALID_SESSION": {
+          yield Constructor.ClientEvent(
+            new Constructor.InvalidSession(this, payload),
+          );
+          break;
+        }
+        case "MESSAGE_CREATE": {
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Message(this, payload));
+          break;
+        }
+        /* Client events */
+        case "HEARTBEAT": {
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Heartbeat(this, payload))
+          break;
+        }
+        case "RATELIMIT": {
+          // deno-fmt-ignore
+          yield Constructor.ClientEvent(new Constructor.Ratelimit(this, payload));
+          break;
+        }
       }
     }
   }

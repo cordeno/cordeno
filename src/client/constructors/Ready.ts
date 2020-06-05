@@ -1,7 +1,7 @@
 import { Client } from "../Client.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
-export class READY {
+export class Ready {
   public gatewayVersion!: number;
   public user!: Interfaces.User;
   public privateChannels!: Array<any>;
