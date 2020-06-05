@@ -6,6 +6,7 @@ import {
   HEARTBEAT,
   RESUMED,
   INVALID_SESSION,
+  ev,
 } from "../mod.ts";
 import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
 const env = dotenv.config();
@@ -16,7 +17,7 @@ const client = new Client({
 
 for await (const ctx of client) {
   switch (ctx.event) {
-    case "READY": {
+    case ev.Ready: {
       const ready: READY = ctx;
 
       console.log("Cordeno is now ready!");
@@ -32,18 +33,18 @@ for await (const ctx of client) {
       });
       break;
     }
-    case "RESUMED": {
+    case ev.Resumed: {
       const resumed: RESUMED = ctx;
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }
-    case "INVALID_SESSION": {
+    case ev.InvalidSession: {
       const session: INVALID_SESSION = ctx;
       console.log(
         `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
       );
     }
-    case "RATELIMIT": {
+    case ev.Ratelimit: {
       const ratelimit: RATELIMIT = ctx;
       console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
       // deno-fmt-ignore
@@ -51,7 +52,7 @@ for await (const ctx of client) {
       break;
     }
 
-    case "HEARTBEAT": {
+    case ev.Heartbeat: {
       const heartbeat: HEARTBEAT = ctx;
       // deno-fmt-ignore
       console.log(
@@ -60,7 +61,7 @@ for await (const ctx of client) {
         );
       break;
     }
-    case "MESSAGE_CREATE": {
+    case ev.Message: {
       const msg: MESSAGE_CREATE = ctx;
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
