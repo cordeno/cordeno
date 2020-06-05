@@ -153,14 +153,14 @@ export class WebSocketManager {
     );
     switch (code) {
       case 4000: // Unknown error
-      case 4007: { // Invalid seq
+      case 4007: // Invalid seq
+      case 4009: { // Session timed out
         this.reconnect(true);
         break;
       }
       case 4001: // Unknown opcode
       case 4002: // Decode error
-      case 4003: // Not authenticated
-      case 4009: { // Session timed out
+      case 4003: { // Not authenticated
         this.reconnect();
         break;
       }
