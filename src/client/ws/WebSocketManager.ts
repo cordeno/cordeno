@@ -87,6 +87,7 @@ export class WebSocketManager {
   async identify() {
     const opts = this.client.cache.get("client");
     if (this.status === "reconnecting") {
+      console.log('Reconnecting')
       return this.resume();
     }
     this.status = "connected";
@@ -104,7 +105,13 @@ export class WebSocketManager {
   }
 
   async resume() {
+    console.log('Resuming')
     const opts = this.client.cache.get("client");
+    console.log(`
+    token: ${opts.token}
+    sessionid: ${opts.sessionID}
+    sequence: ${opts.sequence}
+    `)
     this.status = "connected";
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
