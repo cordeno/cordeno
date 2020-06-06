@@ -12,8 +12,8 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
 Current master branch version: `0.3.1`  
-Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev)  
-All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.1/mod.ts).
+Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev2)  
+All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.1/mod.ts)
 
 # Example:
 index.ts
