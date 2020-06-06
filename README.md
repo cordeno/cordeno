@@ -63,6 +63,7 @@ for await (const ctx of client) {
       console.log(
         `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
       );
+      break;
     }
     case ev.Ratelimit: {
       const ratelimit: RATELIMIT = ctx;
