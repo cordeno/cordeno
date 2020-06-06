@@ -6,7 +6,7 @@ export interface MessageOptions {
   tts?: boolean;
 }
 
-export class MESSAGE_CREATE {
+export class Message {
   public author!: Interfaces.User;
   public createdAt!: Date;
   public editedAt!: Date | null;

@@ -1,12 +1,11 @@
 import {
   Client,
-  MESSAGE_CREATE,
-  READY,
-  RATELIMIT,
-  HEARTBEAT,
-  RESUMED,
-  INVALID_SESSION,
-  ev,
+  Message,
+  Ready,
+  Ratelimit,
+  Heartbeat,
+  Resumed,
+  InvalidSession,
 } from "../mod.ts";
 
 const client = new Client({
@@ -17,8 +16,8 @@ console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   switch (ctx.event) {
-    case ev.Ready: {
-      const ready: READY = ctx;
+    case "READY": {
+      const ready: Ready = ctx;
 
       console.log("Cordeno is now ready!");
       console.log("Discord websocket API version is " + ready.gatewayVersion);
@@ -33,27 +32,27 @@ for await (const ctx of client) {
       });
       break;
     }
-    case ev.Resumed: {
-      const resumed: RESUMED = ctx;
+    case "RESUMED": {
+      const resumed: Resumed = ctx;
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }
-    case ev.InvalidSession: {
-      const session: INVALID_SESSION = ctx;
+    case "INVALID_SESSION": {
+      const session: InvalidSession = ctx;
       console.log(
         `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
       );
     }
-    case ev.Ratelimit: {
-      const ratelimit: RATELIMIT = ctx;
+    case "RATELIMIT": {
+      const ratelimit: Ratelimit = ctx;
       console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
       // deno-fmt-ignore
       console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10}s`);
       break;
     }
 
-    case ev.Heartbeat: {
-      const heartbeat: HEARTBEAT = ctx;
+    case "HEARTBEAT": {
+      const heartbeat: Heartbeat = ctx;
       // deno-fmt-ignore
       console.log(
         "Heartbeat recieved: \n" +
@@ -61,8 +60,8 @@ for await (const ctx of client) {
         );
       break;
     }
-    case ev.Message: {
-      const msg: MESSAGE_CREATE = ctx;
+    case "MESSAGE_CREATE": {
+      const msg: Message = ctx;
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);
