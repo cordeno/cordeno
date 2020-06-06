@@ -1,23 +1,24 @@
 import {
   Client,
-  Message,
-  Ready,
-  Ratelimit,
-  Heartbeat,
-  Resumed,
-  InvalidSession,
+  MESSAGE_CREATE,
+  READY,
+  RATELIMIT,
+  HEARTBEAT,
+  RESUMED,
+  INVALID_SESSION,
+  ev,
 } from "../mod.ts";
+import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
+const env = dotenv.config();
 
 const client = new Client({
-  token: "YOUR_TOKEN",
+  token: env.TOKEN,
 });
-
-console.log(`Running cordeno v${client.version}`);
 
 for await (const ctx of client) {
   switch (ctx.event) {
-    case "READY": {
-      const ready: Ready = ctx;
+    case ev.Ready: {
+      const ready: READY = ctx;
 
       console.log("Cordeno is now ready!");
       console.log("Discord websocket API version is " + ready.gatewayVersion);
@@ -32,27 +33,27 @@ for await (const ctx of client) {
       });
       break;
     }
-    case "RESUMED": {
-      const resumed: Resumed = ctx;
+    case ev.Resumed: {
+      const resumed: RESUMED = ctx;
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }
-    case "INVALID_SESSION": {
-      const session: InvalidSession = ctx;
+    case ev.InvalidSession: {
+      const session: INVALID_SESSION = ctx;
       console.log(
         `An invalid session occured. Can resume from previous state?: ${session.canResume}`,
       );
     }
-    case "RATELIMIT": {
-      const ratelimit: Ratelimit = ctx;
+    case ev.Ratelimit: {
+      const ratelimit: RATELIMIT = ctx;
       console.log(`A rate limit was hit for the route: ${ratelimit.route}`);
       // deno-fmt-ignore
       console.log(`The ratelimit will reset in ${Math.round(ratelimit.resetIn / 1000 * 10) / 10}s`);
       break;
     }
 
-    case "HEARTBEAT": {
-      const heartbeat: Heartbeat = ctx;
+    case ev.Heartbeat: {
+      const heartbeat: HEARTBEAT = ctx;
       // deno-fmt-ignore
       console.log(
         "Heartbeat recieved: \n" +
@@ -60,8 +61,8 @@ for await (const ctx of client) {
         );
       break;
     }
-    case "MESSAGE_CREATE": {
-      const msg: Message = ctx;
+    case ev.Message: {
+      const msg: MESSAGE_CREATE = ctx;
       if (msg.author.id !== client.user.id) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);

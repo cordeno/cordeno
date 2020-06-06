@@ -1,6 +1,7 @@
 import { Client } from "../Client.ts";
+import * as Interfaces from "../interfaces/interface_export.ts";
 
-export class Heartbeat {
+export class HEARTBEAT {
   public recieved!: string;
   public rate!: number;
   public total!: number;
