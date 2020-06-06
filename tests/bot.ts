@@ -8,9 +8,11 @@ import {
   INVALID_SESSION,
   ev,
 } from "../mod.ts";
+import * as dotenv from "https://deno.land/x/denoenv/mod.ts";
+const env = dotenv.config();
 
 const client = new Client({
-  token: "...",
+  token: env.TOKEN,
 });
 
 console.log(`Running cordeno v${client.version}`);
