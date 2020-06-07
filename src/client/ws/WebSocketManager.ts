@@ -24,7 +24,6 @@ export class WebSocketManager {
   private status: string = "connecting";
   private clientCache!: any
   constructor(private client: Client) {
-    console.log(client.cache)
     this.clientCache = client.cache.get("client")
   }
 
@@ -40,8 +39,6 @@ export class WebSocketManager {
         if (payload.s) {
           this.clientCache.sequence = payload.s;
         }
-
-        console.log(this.clientCache)
 
         if (payload.op === OPCODE.Dispatch) {
           this.client.event.post(payload.t, payload);
