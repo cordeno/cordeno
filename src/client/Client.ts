@@ -6,7 +6,7 @@ import { AsyncEventQueue } from "./Queue.ts";
 import { DenoAsync } from "../../deps.ts";
 
 export class Client {
-  ws: WebSocketManager = new WebSocketManager(this);
+  ws!: WebSocketManager;
   http: ReqHandler;
   options!: CordenoOptions;
   event: AsyncEventQueue = new AsyncEventQueue();
@@ -35,6 +35,7 @@ export class Client {
       sequence: null,
       token: this.options.token,
     });
+    this.ws = new WebSocketManager(this)
     this.ws.connect();
     this.http = new ReqHandler(this);
     this.mux.add(this.event.queue());

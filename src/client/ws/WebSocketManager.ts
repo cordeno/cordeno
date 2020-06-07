@@ -22,7 +22,10 @@ export class WebSocketManager {
     total: 0,
   };
   private status: string = "connecting";
+  private clientCache!: any
   constructor(private client: Client) {
+    console.log(client.cache)
+    this.clientCache = client.cache.get("client")
   }
 
   // Connects to API
@@ -33,10 +36,16 @@ export class WebSocketManager {
       if (typeof msg === "string") {
         const payload: Payload = JSON.parse(msg.toString());
 
+        //Grabs last sequence number
+        if (payload.s) {
+          this.clientCache.sequence = payload.s;
+        }
+
+        console.log(this.clientCache)
+
         if (payload.op === OPCODE.Dispatch) {
           this.client.event.post(payload.t, payload);
         }
-        if (payload.s) this.client.cache.get("client").sequence = payload.s;
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();
@@ -83,7 +92,6 @@ export class WebSocketManager {
 
   // Indentifies client to discord
   async identify() {
-    const opts = this.client.cache.get("client");
     if (this.status === "reconnecting") {
       return this.resume();
     }
@@ -91,7 +99,7 @@ export class WebSocketManager {
     return this.socket.send(JSON.stringify({
       op: OPCODE.Identify,
       d: {
-        token: opts.token,
+        token: this.clientCache.token,
         properties: {
           $os: "linux",
           $browser: `${Cordeno.Name} v${Cordeno.Version}`,
@@ -102,14 +110,17 @@ export class WebSocketManager {
   }
 
   async resume() {
-    const opts = this.client.cache.get("client");
+    console.log(`Attempting resume:
+    token: ${this.clientCache.token}
+    session_id: ${this.clientCache.sessionID}
+    seq: ${this.clientCache.sequence}`)
     this.status = "connected";
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
       d: {
-        token: opts.token,
-        session_id: opts.sessionID,
-        seq: opts.sequence,
+        token: this.clientCache.token,
+        session_id: this.clientCache.sessionID,
+        seq: this.clientCache.sequence,
       },
     }));
   }
