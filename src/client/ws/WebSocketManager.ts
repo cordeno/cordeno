@@ -22,7 +22,9 @@ export class WebSocketManager {
     total: 0,
   };
   private status: string = "connecting";
+  private clientCache!: any;
   constructor(private client: Client) {
+    this.clientCache = client.cache.get("client");
   }
 
   // Connects to API
@@ -33,10 +35,14 @@ export class WebSocketManager {
       if (typeof msg === "string") {
         const payload: Payload = JSON.parse(msg.toString());
 
+        //Grabs last sequence number
+        if (payload.s) {
+          this.clientCache.sequence = payload.s;
+        }
+
         if (payload.op === OPCODE.Dispatch) {
           this.client.event.post(payload.t, payload);
         }
-        if (payload.s) this.client.cache.get("client").sequence = payload.s;
         switch (payload.op) {
           case OPCODE.Hello: {
             this.identify();
@@ -75,7 +81,7 @@ export class WebSocketManager {
 
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
-    this.panic();
+    this.panic(fresh ? 1000 : 1012);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
@@ -83,7 +89,6 @@ export class WebSocketManager {
 
   // Indentifies client to discord
   async identify() {
-    const opts = this.client.cache.get("client");
     if (this.status === "reconnecting") {
       return this.resume();
     }
@@ -91,7 +96,7 @@ export class WebSocketManager {
     return this.socket.send(JSON.stringify({
       op: OPCODE.Identify,
       d: {
-        token: opts.token,
+        token: this.clientCache.token,
         properties: {
           $os: "linux",
           $browser: `${Cordeno.Name} v${Cordeno.Version}`,
@@ -102,14 +107,13 @@ export class WebSocketManager {
   }
 
   async resume() {
-    const opts = this.client.cache.get("client");
     this.status = "connected";
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
       d: {
-        token: opts.token,
-        session_id: opts.sessionID,
-        seq: opts.sequence,
+        token: this.clientCache.token,
+        session_id: this.clientCache.sessionID,
+        seq: this.clientCache.sequence,
       },
     }));
   }
@@ -142,11 +146,11 @@ export class WebSocketManager {
   }
 
   // Fired when something went wrong
-  async panic() {
+  async panic(code: number = 1000) {
     this.status = "panick";
     this.heartbeat.recieved = true;
     if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
-    if (!this.socket.isClosed) this.socket.close();
+    if (!this.socket.isClosed) this.socket.close(code);
   }
 
   // Fired when the socket is disconnected
