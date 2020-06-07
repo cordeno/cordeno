@@ -81,7 +81,7 @@ export class WebSocketManager {
 
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
-    this.panic();
+    this.panic(fresh ? 1000 : 1012);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
@@ -150,11 +150,11 @@ export class WebSocketManager {
   }
 
   // Fired when something went wrong
-  async panic() {
+  async panic(code: number = 1000) {
     this.status = "panick";
     this.heartbeat.recieved = true;
     if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
-    if (!this.socket.isClosed) this.socket.close();
+    if (!this.socket.isClosed) this.socket.close(code);
   }
 
   // Fired when the socket is disconnected
