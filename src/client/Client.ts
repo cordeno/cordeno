@@ -35,7 +35,7 @@ export class Client {
       sequence: null,
       token: this.options.token,
     });
-    this.ws = new WebSocketManager(this)
+    this.ws = new WebSocketManager(this);
     this.ws.connect();
     this.http = new ReqHandler(this);
     this.mux.add(this.event.queue());

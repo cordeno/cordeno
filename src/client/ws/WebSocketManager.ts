@@ -22,9 +22,9 @@ export class WebSocketManager {
     total: 0,
   };
   private status: string = "connecting";
-  private clientCache!: any
+  private clientCache!: any;
   constructor(private client: Client) {
-    this.clientCache = client.cache.get("client")
+    this.clientCache = client.cache.get("client");
   }
 
   // Connects to API
@@ -107,10 +107,6 @@ export class WebSocketManager {
   }
 
   async resume() {
-    console.log(`Attempting resume:
-    token: ${this.clientCache.token}
-    session_id: ${this.clientCache.sessionID}
-    seq: ${this.clientCache.sequence}`)
     this.status = "connected";
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
