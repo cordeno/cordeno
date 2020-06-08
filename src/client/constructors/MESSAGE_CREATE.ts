@@ -1,7 +1,7 @@
 // https://discord.com/developers/docs/resources/channel#message-object
 
 import { Client } from "../Client.ts";
-import { UserStruct } from './struct/User.ts'
+import { UserStruct } from "./struct/User.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
 export interface MessageOptions {

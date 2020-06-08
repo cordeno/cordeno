@@ -35,7 +35,7 @@ export class Client {
   }
 
   async _init() {
-    this.cache.set("client", {
+    const cache = this.cache.set("client", {
       sessionID: null,
       sequence: null,
       gateway: null,
@@ -45,13 +45,11 @@ export class Client {
         resetAfter: 0,
       },
       token: this.options.token,
-    });
+    }).get("client");
 
     // REST Handler
     this.http = new ReqHandler(this);
     const gatewayInfo: any = await this.http.get("/gateway/bot");
-
-    const cache = this.cache.get("client");
 
     cache.gateway = gatewayInfo.url + "/?v=6&encoding=json";
     cache.logins.total = gatewayInfo.session_start_limit.total;

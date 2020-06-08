@@ -74,6 +74,7 @@ for await (const ctx of client) {
         if (msg.content === "!ping") {
           await msg.reply(`Pong!`);
           await msg.reply(`Message author: ${msg.author.username}`);
+          await msg.reply(`User created at: ${msg.author.createdOn}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
           await msg.reply(`Client name: ${client.user.name}`);
           continue;
