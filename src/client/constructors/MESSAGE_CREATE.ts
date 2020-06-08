@@ -14,7 +14,7 @@ export class MESSAGE_CREATE {
   public member!: Interfaces.GuildMember | null;
 
   constructor(private client: Client, private payload: any) {
-    const data: Interfaces.Message = payload.d;
+    const data: Interfaces.Message = this.payload.d;
     this.author = data.author;
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)

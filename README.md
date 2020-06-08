@@ -1,6 +1,6 @@
 ![Cordeno](assets/cordeno-200.gif)
 # Cordeno
-[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.2/mod.ts)
+[![deno doc](https://img.shields.io/badge/deno-doc-blue?style=flat)](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.3/mod.ts)
 [![GitHub stars](https://img.shields.io/github/stars/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno)
 [![Discord](https://img.shields.io/discord/713653280638631976?color=%237289DA&label=discord&style=flat)](https://discord.gg/WT2g6Mn)
 [![GitHub last commit](https://img.shields.io/github/last-commit/cordeno/cordeno?style=flat)](https://github.com/cordeno/cordeno/commits/)  
@@ -11,9 +11,9 @@ Inspired by [Dinocord](https://github.com/sunsetkookaburra/dinocord).
 # Development progress
 Cordeno is still in its **early stages of development**, and is not production ready. Many cores features of the Discord API is still missing, and has yet to be implemented.
 Breaking changes may occur at any time without prior warning.  
-Current master branch version: `0.3.2`  
+Current master branch version: `0.3.3`  
 Find `dev` branch [here!](https://github.com/cordeno/cordeno/tree/dev2)  
-All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.2/mod.ts)
+All current events can be found in the example below, but not every method is listed as of this moment. Take a look at the [documentation](https://doc.deno.land/https/deno.land/x/cordeno@v0.3.3/mod.ts)
 
 # Example:
 index.ts
@@ -27,7 +27,7 @@ import {
   RESUMED,
   INVALID_SESSION,
   ev,
-} from "https://deno.land/x/cordeno@v0.3.2/mod.ts";
+} from "https://deno.land/x/cordeno@v0.3.3/mod.ts";
 
 const client = new Client({
   token: "YOUR TOKEN HERE",
@@ -55,6 +55,10 @@ for await (const ctx of client) {
     }
     case ev.Resumed: {
       const resumed: RESUMED = ctx;
+      if (resumed.reconnectRequested) {
+        console.log("Discord API requested a reconnect.");
+        break;
+      }
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }

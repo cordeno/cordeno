@@ -10,12 +10,12 @@ export class READY {
   public shard!: [number, number];
 
   constructor(private client: Client, private payload: any) {
-    this.gatewayVersion = payload.d.v;
-    this.user = payload.d.user;
-    this.privateChannels = payload.d.private_channels;
-    this.unavailableGuilds = payload.d.guilds;
-    this.sessionID = payload.d.session_id;
+    this.gatewayVersion = this.payload.d.v;
+    this.user = this.payload.d.user;
+    this.privateChannels = this.payload.d.private_channels;
+    this.unavailableGuilds = this.payload.d.guilds;
+    this.sessionID = this.payload.d.session_id;
     client.cache.get("client").sessionID = this.sessionID;
-    this.shard = payload.d.shard;
+    this.shard = this.payload.d.shard;
   }
 }

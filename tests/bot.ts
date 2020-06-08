@@ -37,6 +37,10 @@ for await (const ctx of client) {
     }
     case ev.Resumed: {
       const resumed: RESUMED = ctx;
+      if (resumed.reconnectRequested) {
+        console.log("Discord API requested a reconnect.");
+        break;
+      }
       console.log(`Resumed at: ${resumed.resumeTime}`);
       break;
     }

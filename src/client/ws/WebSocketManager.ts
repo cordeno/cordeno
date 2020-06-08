@@ -29,7 +29,7 @@ export class WebSocketManager {
 
   // Connects to API
   async connect() {
-    this.socket = await connectWebSocket(Discord.Endpoint);
+    this.socket = await connectWebSocket(this.clientCache.gateway);
 
     for await (const msg of this.socket) {
       if (typeof msg === "string") {
@@ -59,6 +59,9 @@ export class WebSocketManager {
             break;
           }
           case OPCODE.Reconnect: {
+            this.client.event.post("RESUMED", {
+              reconnectRequested: true,
+            });
             await this.reconnect();
             break;
           }
