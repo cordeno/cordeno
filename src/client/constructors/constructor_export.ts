@@ -4,5 +4,5 @@ export * from "./MESSAGE_CREATE.ts";
 export * from "./RATELIMIT.ts";
 export * from "./READY.ts";
 export * from "./RESUMED.ts";
-export * from "./ClientUser.ts";
+export * from "./struct/ClientUser.ts";
 export * from "./ClientEvent.ts";

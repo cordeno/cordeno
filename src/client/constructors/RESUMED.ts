@@ -1,9 +1,14 @@
 import { Client } from "../Client.ts";
 
 export class RESUMED {
-  public resumeTime!: Date;
+  public reconnectRequested: boolean = false;
+  public resumeTime: Date | null = null;
 
   constructor(private client: Client, private payload: any) {
-    this.resumeTime = new Date();
+    if (this.payload.reconnectRequested) {
+      this.reconnectRequested = this.payload.reconnectRequested;
+    } else {
+      this.resumeTime = new Date();
+    }
   }
 }

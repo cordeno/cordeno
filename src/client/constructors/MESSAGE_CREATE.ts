@@ -1,4 +1,7 @@
+// https://discord.com/developers/docs/resources/channel#message-object
+
 import { Client } from "../Client.ts";
+import { UserStruct } from "./struct/User.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
 export interface MessageOptions {
@@ -7,15 +10,15 @@ export interface MessageOptions {
 }
 
 export class MESSAGE_CREATE {
-  public author!: Interfaces.User;
+  public author!: UserStruct;
   public createdAt!: Date;
   public editedAt!: Date | null;
   public content!: string;
   public member!: Interfaces.GuildMember | null;
 
   constructor(private client: Client, private payload: any) {
-    const data: Interfaces.Message = payload.d;
-    this.author = data.author;
+    const data: Interfaces.Message = this.payload.d;
+    this.author = new UserStruct(data.author);
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
       ? new Date(data.edited_timestamp)
