@@ -1,5 +1,5 @@
-import { Client } from "../Client.ts";
-import { OPCODE } from "../constant/discord.ts";
+import { Client } from "../../Client.ts";
+import { OPCODE } from "../../constant/discord.ts";
 
 interface IClientInfo {
   id: string;
