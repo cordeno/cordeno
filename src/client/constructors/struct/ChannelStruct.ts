@@ -1,6 +1,6 @@
 // https://discord.com/developers/docs/resources/user#user-object
 import { Client } from "../../Client.ts";
-import {Channel, User, Overwrite} from "../../interfaces/interface_export.ts"
+import { Channel, User, Overwrite } from "../../interfaces/interface_export.ts";
 
 export class ChannelStruct {
   public id!: string;
@@ -27,7 +27,7 @@ export class ChannelStruct {
     this.permissionOverwrites = this.payload.permission_overwrites;
     this.name = this.payload.name;
     this.topic = this.payload.topic;
-    this.nsfw = this.payload.nsfw
+    this.nsfw = this.payload.nsfw;
     this.lastMessageID = this.payload.last_message_id;
     this.bitrate = this.payload.bitrate;
     this.userLimit = this.payload.user_limit;

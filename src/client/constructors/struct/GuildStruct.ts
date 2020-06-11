@@ -1,7 +1,15 @@
 // https://discord.com/developers/docs/resources/user#user-object
 import { Client } from "../../Client.ts";
 import { Snowflake } from "../../../util/Snowflake.ts";
-import {Guild, Channel, GuildMember, Presence, Voice, Emoji, Role} from "../../interfaces/interface_export.ts"
+import {
+  Guild,
+  Channel,
+  GuildMember,
+  Presence,
+  Voice,
+  Emoji,
+  Role,
+} from "../../interfaces/interface_export.ts";
 
 export class GuildStruct {
   public id: string;
@@ -13,7 +21,7 @@ export class GuildStruct {
   public ownerID!: string;
   public permissions?: number;
   public region: string;
-  public afkChannelID: string | null = null
+  public afkChannelID: string | null = null;
   public afkTimeout: number;
   public embedEnabled?: boolean = false;
   public embedChannelID?: string | null = null;
@@ -42,7 +50,7 @@ export class GuildStruct {
   public maxMembers?: number;
   public vanityURLCode: string | null = null;
   public description: string | null = null;
-  public banner: string| null = null;
+  public banner: string | null = null;
   public premiumTier: number;
   public premiumSubscriptionCount?: number;
   public preferredLocale: string;
@@ -54,7 +62,7 @@ export class GuildStruct {
   constructor(private payload: Guild) {
     this.id = this.payload.id;
     this.name = this.payload.name;
-    this.icon = this.payload.icon
+    this.icon = this.payload.icon;
     this.splash = this.payload.splash;
     this.discoverySplash = this.payload.discovery_splash;
     this.owner = this.payload.owner;
@@ -65,7 +73,7 @@ export class GuildStruct {
     this.embedChannelID = this.payload.embed_channel_id;
     this.verificationLevel = this.payload.verification_level;
     this.defaultMessageNotifications =
-    this.payload.default_message_notifications;
+      this.payload.default_message_notifications;
     this.explicitContentFilter = this.payload.explicit_content_filter;
     this.roles = this.payload.roles;
     this.emojis = this.payload.emojis;
@@ -79,7 +87,7 @@ export class GuildStruct {
     this.rulesChannelID = this.payload.rules_channel_id;
     this.joinedAt = this.payload.joined_at;
     this.large = this.payload.large;
-    this.unavailable = this.payload.unavailable
+    this.unavailable = this.payload.unavailable;
     this.memberCount = this.payload.member_count;
     this.voiceStates = this.payload.voice_states;
     this.members = this.payload.members;

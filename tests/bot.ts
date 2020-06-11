@@ -77,8 +77,8 @@ for await (const ctx of client) {
           await msg.reply(`User created at: ${msg.author.createdOn}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
           await msg.reply(`Client name: ${client.user.name}`);
-         // await msg.reply(`Current Guild: ${msg.guild.name}`)
-         // await msg.reply(`Current Channel: ${msg.channel.name}`)
+          // await msg.reply(`Current Guild: ${msg.guild.name}`)
+          // await msg.reply(`Current Channel: ${msg.channel.name}`)
           continue;
         }
         if (msg.content === "!cordeno") {
