@@ -1,6 +1,6 @@
 // https://discord.com/developers/docs/resources/user#user-object
 import { Client } from "../../Client.ts";
-import { User } from "../../interfaces/user.ts";
+import { User } from "../../interfaces/interface_export.ts";
 import { Snowflake } from "../../../util/Snowflake.ts";
 
 export class UserStruct {
