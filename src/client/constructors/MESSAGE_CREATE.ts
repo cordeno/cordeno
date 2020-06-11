@@ -2,6 +2,8 @@
 
 import { Client } from "../Client.ts";
 import { UserStruct } from "./struct/UserStruct.ts";
+import { GuildStruct } from "./struct/GuildStruct.ts";
+import { ChannelStruct } from "./struct/ChannelStruct.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
 export interface MessageOptions {
@@ -15,10 +17,14 @@ export class MESSAGE_CREATE {
   public editedAt!: Date | null;
   public content!: string;
   public member!: Interfaces.GuildMember | null;
+  public guild!: GuildStruct;
+  public channel!: ChannelStruct;
 
   constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = this.payload.d;
     this.author = new UserStruct(data.author);
+    // this.guild = new GuildStruct(discordGuild); - `discordGuild` should be a cached guild object that uses data.guild_id
+    // this.channel = new ChannelStruct(discordChannel); - `discordChannel` should be a cached channel object that uses data.channel_id
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
       ? new Date(data.edited_timestamp)
