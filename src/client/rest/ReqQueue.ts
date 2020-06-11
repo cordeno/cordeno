@@ -48,8 +48,8 @@ export class ReqQueue {
         const limit = res.headers.get("X-RateLimit-Limit");
         const remaining = res.headers.get("X-RateLimit-Remaining");
         const reset = Number(res.headers.get("X-RateLimit-Reset")) * 1000;
-        const resetAfter = Number(res.headers.get("X-RateLimit-Reset-After")) *
-          1000;
+        // @ts-ignore deno-fmt-ignore
+        const resetAfter = Number(res.headers.get("X-RateLimit-Reset-After")) * 1000;
 
         this.limit = limit ? Number(limit) : Infinity;
         this.remaining = remaining ? Number(remaining) : 1;
