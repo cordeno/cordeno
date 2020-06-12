@@ -2,6 +2,11 @@
 import { Client } from "../../Client.ts";
 import { Channel, User, Overwrite } from "../../interfaces/interface_export.ts";
 
+export interface MessageOptions {
+  tts?: boolean;
+  embed?: { title?: string; type?: string; description?: string; url?: string;  timestamp?: Date; color?: number; footer?: {text: string; icon_url?: string; proxy_icon_url?: string;}; image?: {url?: string; proxy_url?: string; height?: number; width?: number;}; thumbnail?: {url?: string; proxy_url?: string; height?: number; width?: number}; video?: {url?: string; height?: number; width?: number;}; provider?: {name?: string; url?: string;}; author?: {name?: string; url?: string; icon_url?: string; proxy_icon_url: string;}; fields?: Array<{name: string; value: string; inline?: boolean}>}
+}
+
 export class ChannelStruct {
   public id!: string;
   public guildID?: string;
@@ -21,7 +26,7 @@ export class ChannelStruct {
   public parentID?: string;
   public lastPinTimestamp?: string;
 
-  constructor(private payload: Channel) {
+  constructor(private payload: Channel, private client: Client) {
     this.id = this.payload.id;
     this.guildID = this.payload.guild_id;
     this.permissionOverwrites = this.payload.permission_overwrites;
@@ -42,5 +47,41 @@ export class ChannelStruct {
 
   get toString() {
     return `<#${this.id}>`;
+  }
+
+  /*async delete(
+  ) {
+
+    return await this.client.http.delete(
+      `/channels/${this.id}/`
+    );
+  }*/
+
+  /* async setName(name: string, options: { reason?: string}){
+
+    return await this.client.http.patch(
+      `/channels/${this.id}/`,
+      {
+        name: name,
+        reason: options.reason
+      },
+    );
+  } 
+  
+  - Waiting for Guild and Channel Caching - see MESSAGE_CREATE.ts constructor */
+  
+  async send(
+    msg?: string,
+    options: MessageOptions = { tts: false,  },
+  ) {
+
+    return await this.client.http.post(
+      `/channels/${this.id}/messages`,
+      {
+        content: msg,
+        tts: options.tts,
+        embed: options.embed
+      },
+    );
   }
 }

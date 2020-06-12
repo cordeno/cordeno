@@ -77,13 +77,27 @@ for await (const ctx of client) {
           await msg.reply(`User created at: ${msg.author.createdOn}`);
           await msg.reply(`Created at: ${msg.createdAt}`);
           await msg.reply(`Client name: ${client.user.name}`);
-          // await msg.reply(`Current Guild: ${msg.guild.name}`)
-          // await msg.reply(`Current Channel: ${msg.channel.name}`)
+          /* await msg.reply(`Current Guild: ${msg.guild.name}`)
+          await msg.reply(`Current Channel: ${msg.channel.name}`) 
+          - Waiting for Guild and Channel Caching - see MESSAGE_CREATE.ts constructor*/
           continue;
+        } else if (msg.content === "!cordeno") {
+          await msg.reply(
+            "",
+            {
+              embed: {
+                title: `Cordeno version: v${client.version}`,
+                color: 0x2f3136,
+              },
+            },
+          );
         }
-        if (msg.content === "!cordeno") {
-          await msg.reply(`Cordeno version: v${client.version}`);
-        }
+        /* else if (msg.content === "!nuke") {
+          msg.channel.send('',{embed: {title: `💣 Nuking Channel: **${msg.channel.name}**...`, color: 0x2f3136}})
+          await msg.channel.delete()
+        } 
+        
+        - Waiting for DELETE request - see ReqHandler.ts */
       }
       break;
     }

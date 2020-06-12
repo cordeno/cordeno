@@ -32,4 +32,6 @@ export class ReqHandler {
     }
     this.queue.get(route)?.push(request);
   }
+
+  // Add DELETE and PATCH methods for changing channel/guild data, and removing channels etc 
 }
