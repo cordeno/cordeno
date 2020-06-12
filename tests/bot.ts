@@ -104,11 +104,12 @@ for await (const ctx of client) {
             break;
           }
           case "guildinfo": {
+            await msg.channel.triggerTyping();
             let icon = msg.guild.getIconURL();
             let pruneCount = await msg.guild.getPrune();
-            let channels = await msg.guild.getChannels();
-            let members = await msg.guild.getMembers();
-            let roles = await msg.guild.getRoles();
+            let channels = msg.guild.channels;
+            let members = msg.guild.members;
+            let roles = msg.guild.roles;
             await msg.channel.send(
               "",
               {
@@ -116,9 +117,9 @@ for await (const ctx of client) {
                   color: 0x2f3136,
                   author: { icon_url: icon, name: msg.guild.name },
                   fields: [
-                    { name: "Members", value: members.length, inline: true },
+                    { name: "Members", value: members?.length, inline: true },
                     { name: "Roles", value: roles.length, inline: true },
-                    { name: "Channels", value: channels.length, inline: true },
+                    { name: "Channels", value: channels?.length, inline: true },
                     { name: "Prune", value: pruneCount.length, inline: true },
                   ],
                 },
@@ -127,6 +128,7 @@ for await (const ctx of client) {
             break;
           }
           case "newrole": {
+            await msg.channel.triggerTyping();
             msg.guild.createRole(
               args[0],
               {
@@ -154,6 +156,7 @@ for await (const ctx of client) {
             break;
           }
           case "newchannels": {
+            await msg.channel.triggerTyping();
             if (!args[0]) msg.reply("You must supply a channel name!");
             else {
               msg.guild.createChannel(
@@ -161,9 +164,9 @@ for await (const ctx of client) {
                 {
                   type: Number.parseInt(args[1]),
                   topic: args.slice(3).join(" "),
-                  rate_limit_per_user: Number.parseInt(args[2]),
+                  rateLimitPerUser: Number.parseInt(args[2]),
                 },
-              ).then((role) => {
+              ).then(() => {
                 msg.channel.send(
                   "",
                   {
@@ -181,6 +184,39 @@ for await (const ctx of client) {
                 );
               });
             }
+            break;
+          }
+          case "purge": {
+            await msg.channel.triggerTyping();
+            if (!args[0]) msg.reply("You must provide message IDs to purge!");
+            else {
+              let msgs = await msg.channel.getMessages(
+                Number.parseInt(args[0]),
+              );
+              let purge: Array<string> = msgs.map((m: any) => m.id || m);
+              await msg.channel.bulkDelete(purge);
+              msg.channel.send(
+                "",
+                {
+                  embed: {
+                    color: 0x2f3136,
+                    description:
+                      `:white_check_mark: Deleted ${msgs.length} messages!`,
+                  },
+                },
+              );
+            }
+            break;
+          }
+          case "createinv": {
+            await msg.channel.triggerTyping();
+            await msg.channel.createInvite(
+              {
+                maxAge: Number.parseInt(args[0]),
+                maxUses: Number.parseInt(args[1]),
+              },
+            );
+            await msg.reply("Created new invite!");
             break;
           }
         }

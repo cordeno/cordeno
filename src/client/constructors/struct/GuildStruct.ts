@@ -120,6 +120,11 @@ export class GuildStruct {
       new Date(this.joinedAt ? new Date(this.joinedAt).getTime() : ""),
     );
   }
+
+  async voiceRegions() {
+    return await this.client.http.get(`/guilds/${this.id}/regions`)
+  }
+
   getIconURL() {
     console.log(this.icon);
     return this.icon
@@ -127,32 +132,82 @@ export class GuildStruct {
       : "";
   }
   async getRoles() {
-    console.log("run roles");
     return await this.client.http.get(
-      `/guilds/${this.id}/roles`,
+      `/guilds/${this.id}/roles`
     );
   }
 
-  async getMembers(memberID?: string) {
-    console.log("run members");
+  async getMember(memberID: string) {
     return await this.client.http.get(
-      `/guilds/${this.id}/members${memberID ? `/${memberID}` : ""}`,
+      `/guilds/${this.id}/members/${memberID}`
+    );
+  }
+
+  async getMembers(limit?: number, options?: {after?: number}) {
+    return await this.client.http.get(
+      `/guilds/${this.id}/members/${limit ? `?limit=${limit}` : `?limit=1`}${options?.after ? `&after=${options.after}` : ''}`
+    );
+  }
+
+  async getBans(memberID?: string) {
+    return await this.client.http.get(
+      `/guilds/${this.id}/bans${memberID ? `/${memberID}` : ""}`
+    );
+  }
+
+  async getInvites() {
+    return await this.client.http.get(
+      `/guilds/${this.id}/invites`
+    );
+  }
+  
+  async getIntegrations() {
+    return await this.client.http.get(
+      `/guilds/${this.id}/Integrations`
+    );
+  }
+
+  async getWidget() {
+    return await this.client.http.get(
+      `/guilds/${this.id}/widget`
+    );
+  }
+
+  async getVanity() {
+    return await this.client.http.get(
+      `/guilds/${this.id}/vanity-url`
+    );
+  }
+
+  async getWidgetImage(style?: 'shield' | 'banner1' | 'banner2' | 'banner3' | 'banner4') {
+    return await this.client.http.get(
+      `/guilds/${this.id}/widget.png${style ? `?style=${style}` : ''}`
+    );
+  }
+
+  async createIntegrations(options: {type: string, id: string}) {
+    return await this.client.http.post(
+      `/guilds/${this.id}/Integrations`, {type: options.type, id: options.id}
+    );
+  }
+
+  async syncIntegrations(integrationID: string) {
+    return await this.client.http.post(
+      `/guilds/${this.id}/Integrations/${integrationID}/sync`
     );
   }
 
   async getPrune(options?: { days?: number; roles?: Array<string> }) {
-    console.log("run members");
     return await this.client.http.get(
       `/guilds/${this.id}/members${
-        options?.days ? `?days=${options?.days}` : ""
-      }${options?.roles ? `?include_roles=${options?.roles}` : ""}`,
+        options?.days ? `?days=${options?.days}` : "?days=7"
+      }${options?.roles ? `&include_roles=${options?.roles}` : ""}`,
     );
   }
 
   async pruneMembers(
     options?: { days?: number; returnPruned: boolean; roles?: Array<string> },
   ) {
-    console.log("run members");
     return await this.client.http.post(
       `/guilds/${this.id}/prune`,
       {
@@ -189,13 +244,13 @@ export class GuildStruct {
       type?: number;
       topic?: string;
       bitrate?: number;
-      user_limit?: number;
-      rate_limit_per_user?: number;
+      userLimit?: number;
+      rateLimitPerUser?: number;
       position?: number;
-      permission_overwrites?: Array<
+      permissionOverwrites?: Array<
         { id: string; type: string; allow: number; deny: number }
       >;
-      parent_id?: number;
+      parentID?: number;
       nsfw?: boolean;
     },
   ) {
@@ -203,23 +258,30 @@ export class GuildStruct {
       `/guilds/${this.id}/channels`,
       {
         name: name,
-        permissions: options?.permission_overwrites,
+        permissions: options?.permissionOverwrites,
         topic: options?.topic,
         bitrate: options?.bitrate,
-        user_limit: options?.user_limit,
-        rate_limit_per_user: options?.rate_limit_per_user,
+        user_limit: options?.userLimit,
+        rate_limit_per_user: options?.rateLimitPerUser,
         position: options?.position,
-        permission_overwrites: options?.permission_overwrites,
-        parent_id: options?.parent_id,
+        permission_overwrites: options?.permissionOverwrites,
+        parent_id: options?.parentID,
         nsfw: options?.nsfw,
       },
     );
   }
 
-  async getChannels() {
-    console.log("run channels");
+  async fetch() {
+    return await this.client.http.get(`/guilds/${this.id}`)
+  }
+
+  async getPreview() {
+    return await this.client.http.get(`/guilds/${this.id}/preview`)
+  }
+
+  async getChannels(includeMemberCount: Boolean) {
     return await this.client.http.get(
-      `/guilds/${this.id}/channels`,
+      `/guilds/${this.id}/channels${includeMemberCount ? `?with_counts=true` : ''}`,
     );
   }
 }
