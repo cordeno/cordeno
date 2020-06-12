@@ -59,7 +59,7 @@ export class GuildStruct {
   public approximateMemberCount?: number;
   public approximatePresenceCount?: number;
 
-  constructor(private payload: Guild) {
+  constructor(private payload: Guild, private client: Client) {
     this.id = this.payload.id;
     this.name = this.payload.name;
     this.icon = this.payload.icon;
@@ -120,4 +120,55 @@ export class GuildStruct {
       new Date(this.joinedAt ? new Date(this.joinedAt).getTime() : ""),
     );
   }
+  getIconURL() {
+    console.log(this.icon)
+    return this.icon ? `https://cdn.discordapp.com/icons/${this.id}/${this.icon}` : ''
+  }
+  async getRoles() {
+    console.log('run roles')
+    return await this.client.http.get(
+      `/guilds/${this.id}/roles`
+    );
+  }
+
+  async getMembers(memberID?: string) {
+    console.log('run members')
+    return await this.client.http.get(
+      `/guilds/${this.id}/members${memberID ? `/${memberID}` : ''}`
+    );
+  }
+
+  async getPrune(options?: {days?: number; roles?: Array<string>}) {
+    console.log('run members')
+    return await this.client.http.get(
+      `/guilds/${this.id}/members${options?.days ? `?days=${options?.days}` : ''}${options?.roles ? `?include_roles=${options?.roles}` : ''}`
+    );
+  }
+
+  async pruneMembers(options?: {days?: number; returnPruned: boolean, roles?: Array<string>}) {
+    console.log('run members')
+    return await this.client.http.post(
+      `/guilds/${this.id}/prune`, {days: options?.days, include_roles: options?.roles, compute_prune_count: options?.returnPruned || false}
+    );
+  }
+
+  async createRole(name?: string, options?: {permissions?: number, color?: number, hoist?: boolean, mentionable?: boolean}) {
+    return await this.client.http.post(
+      `/guilds/${this.id}/roles`, {name: name, permissions: options?.permissions, color: options?.color, mentionable: options?.mentionable}
+    );
+  }
+
+  async createChannel(name: string, options?: {type?: number, topic?: string, bitrate?: number, user_limit?: number, rate_limit_per_user?: number, position?: number, permission_overwrites?: Array<{id: string, type: string, allow: number, deny: number}>, parent_id?: number, nsfw?: boolean}) {
+    return await this.client.http.post(
+      `/guilds/${this.id}/channels`, {name: name, permissions: options?.permission_overwrites, topic: options?.topic, bitrate: options?.bitrate, user_limit: options?.user_limit, rate_limit_per_user: options?.rate_limit_per_user, position: options?. position, permission_overwrites: options?.permission_overwrites, parent_id: options?.parent_id, nsfw: options?.nsfw}
+    );
+  }
+  
+  async getChannels() {
+    console.log('run channels')
+    return await this.client.http.get(
+      `/guilds/${this.id}/channels`
+    );
+  }
+
 }
