@@ -9,7 +9,36 @@ import * as Interfaces from "../interfaces/interface_export.ts";
 export interface MessageOptions {
   mention?: boolean;
   tts?: boolean;
-  embed?: { title?: string; type?: string; description?: string; url?: string;  timestamp?: Date; color?: number; footer?: {text: string; icon_url?: string; proxy_icon_url?: string;}; image?: {url?: string; proxy_url?: string; height?: number; width?: number;}; thumbnail?: {url?: string; proxy_url?: string; height?: number; width?: number}; video?: {url?: string; height?: number; width?: number;}; provider?: {name?: string; url?: string;}; author?: {name?: string; url?: string; icon_url?: string; proxy_icon_url?: string;}; fields?: Array<{name: string; value: string; inline?: boolean}>}
+  embed?: {
+    title?: string;
+    type?: string;
+    description?: string;
+    url?: string;
+    timestamp?: Date;
+    color?: number;
+    footer?: { text: string; icon_url?: string; proxy_icon_url?: string };
+    image?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    thumbnail?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    video?: { url?: string; height?: number; width?: number };
+    provider?: { name?: string; url?: string };
+    author?: {
+      name?: string;
+      url?: string;
+      icon_url?: string;
+      proxy_icon_url?: string;
+    };
+    fields?: Array<{ name: string; value: string; inline?: boolean }>;
+  };
 }
 
 export class MESSAGE_CREATE {
@@ -46,7 +75,7 @@ export class MESSAGE_CREATE {
       {
         content: msg,
         tts: options.tts,
-        embed: options.embed
+        embed: options.embed,
       },
     );
   }

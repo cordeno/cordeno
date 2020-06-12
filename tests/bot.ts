@@ -71,15 +71,15 @@ for await (const ctx of client) {
     case ev.Message: {
       const msg: MESSAGE_CREATE = ctx;
       if (msg.author.id !== client.user.id) {
-        let prefix = '!'
+        let prefix = "!";
         let args: Array<string> = msg.content
-        .slice(Object.keys(prefix).length)
-        .trim()
-        .split(/ +/g);
+          .slice(Object.keys(prefix).length)
+          .trim()
+          .split(/ +/g);
         let cmd = args?.shift()?.toLowerCase();
 
         switch (cmd) {
-          case 'ping': {
+          case "ping": {
             await msg.reply(`Pong!`);
             await msg.reply(`Message author: ${msg.author.username}`);
             await msg.reply(`User created at: ${msg.author.createdOn}`);
@@ -89,9 +89,9 @@ for await (const ctx of client) {
           await msg.reply(`Current Channel: ${msg.channel.name}`)
             await msg.reply(`Current Channel: ${msg.channel.name}`) 
           - Waiting for Guild and Channel Caching - see MESSAGE_CREATE.ts constructor*/
-          continue;
+            break;
           }
-          case 'cordeno': {
+          case "cordeno": {
             await msg.reply(
               "",
               {
@@ -101,27 +101,88 @@ for await (const ctx of client) {
                 },
               },
             );
+            break;
           }
-          case 'guildinfo': {
-            let icon = msg.guild.getIconURL()
-            let pruneCount = await msg.guild.getPrune()
-            let channels = await msg.guild.getChannels()
-            let members = await msg.guild.getMembers()
-            let roles = await msg.guild.getRoles()
-            await msg.channel.send('', {embed: {color: 0x2f3136, author: {icon_url: icon, name: msg.guild.name}, fields: [{name: 'Members', value: members.length, inline: true}, {name: 'Roles', value: roles.length, inline: true}, {name: 'Channels', value: channels.length, inline: true}, {name: 'Prune', value: pruneCount.length, inline: true}]}})
+          case "guildinfo": {
+            let icon = msg.guild.getIconURL();
+            let pruneCount = await msg.guild.getPrune();
+            let channels = await msg.guild.getChannels();
+            let members = await msg.guild.getMembers();
+            let roles = await msg.guild.getRoles();
+            await msg.channel.send(
+              "",
+              {
+                embed: {
+                  color: 0x2f3136,
+                  author: { icon_url: icon, name: msg.guild.name },
+                  fields: [
+                    { name: "Members", value: members.length, inline: true },
+                    { name: "Roles", value: roles.length, inline: true },
+                    { name: "Channels", value: channels.length, inline: true },
+                    { name: "Prune", value: pruneCount.length, inline: true },
+                  ],
+                },
+              },
+            );
+            break;
           }
-          case 'newrole': {
-             msg.guild.createRole(args[0], {color: Number.parseInt(args[1]), permissions: Number.parseInt(args[3]), mentionable: args[2] === "true"}).then((role) => {
-               msg.channel.send('', {embed: {color: 0x2f3136, description: `:white_check_mark: Created new role **${args[0] ? args[0] : 'new role'}** ${args[1] ? `With color **${args[1]}**` : ''} that is ${args[2] === "true" ? '' : '**not**'} mentionable${args[3] ? `With permissions: **${args[3]}**` : ''}!`}})
-             })
+          case "newrole": {
+            msg.guild.createRole(
+              args[0],
+              {
+                color: Number.parseInt(args[1]),
+                permissions: Number.parseInt(args[3]),
+                mentionable: args[2] === "true",
+              },
+            ).then((role) => {
+              msg.channel.send(
+                "",
+                {
+                  embed: {
+                    color: 0x2f3136,
+                    description: `:white_check_mark: Created new role **${
+                      args[0] ? args[0] : "new role"
+                    }** ${args[1] ? `With color **${args[1]}**` : ""} that is ${
+                      args[2] === "true" ? "" : "**not**"
+                    } mentionable${
+                      args[3] ? `With permissions: **${args[3]}**` : ""
+                    }!`,
+                  },
+                },
+              );
+            });
+            break;
           }
-          case 'newchannels': {
-            if (!args[0]) msg.reply('You must supply a channel name!')
-            else msg.guild.createChannel(args[0], {type: Number.parseInt(args[1]), topic: args.slice(3).join(' '), rate_limit_per_user: Number.parseInt(args[2])}).then((role) => {
-              msg.channel.send('', {embed: {color: 0x2f3136, description: `:white_check_mark: Created new channel **${args[0]}** ${args[3] ? `With topic **${args.slice(3).join(' ')}**` : ''} that is type ${args[1] ? args[1] : '0'}!`}})
-            })
-         }
-
+          case "newchannels": {
+            if (!args[0]) msg.reply("You must supply a channel name!");
+            else {
+              msg.guild.createChannel(
+                args[0],
+                {
+                  type: Number.parseInt(args[1]),
+                  topic: args.slice(3).join(" "),
+                  rate_limit_per_user: Number.parseInt(args[2]),
+                },
+              ).then((role) => {
+                msg.channel.send(
+                  "",
+                  {
+                    embed: {
+                      color: 0x2f3136,
+                      description: `:white_check_mark: Created new channel **${
+                        args[0]
+                      }** ${
+                        args[3]
+                          ? `With topic **${args.slice(3).join(" ")}**`
+                          : ""
+                      } that is type ${args[1] ? args[1] : "0"}!`,
+                    },
+                  },
+                );
+              });
+            }
+            break;
+          }
         }
         /* else if (msg.content === "!nuke") {
           msg.channel.send('',{embed: {title: `💣 Nuking Channel: **${msg.channel.name}**...`, color: 0x2f3136}})
