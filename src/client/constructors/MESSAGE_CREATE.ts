@@ -9,7 +9,36 @@ import * as Interfaces from "../interfaces/interface_export.ts";
 export interface MessageOptions {
   mention?: boolean;
   tts?: boolean;
-  embed?: { title?: string; type?: string; description?: string; url?: string;  timestamp?: Date; color?: number; footer?: {text: string; icon_url?: string; proxy_icon_url?: string;}; image?: {url?: string; proxy_url?: string; height?: number; width?: number;}; thumbnail?: {url?: string; proxy_url?: string; height?: number; width?: number}; video?: {url?: string; height?: number; width?: number;}; provider?: {name?: string; url?: string;}; author?: {name?: string; url?: string; icon_url?: string; proxy_icon_url: string;}; fields?: Array<{name: string; value: string; inline?: boolean}>}
+  embed?: {
+    title?: string;
+    type?: string;
+    description?: string;
+    url?: string;
+    timestamp?: Date;
+    color?: number;
+    footer?: { text: string; icon_url?: string; proxy_icon_url?: string };
+    image?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    thumbnail?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    video?: { url?: string; height?: number; width?: number };
+    provider?: { name?: string; url?: string };
+    author?: {
+      name?: string;
+      url?: string;
+      icon_url?: string;
+      proxy_icon_url?: string;
+    };
+    fields?: Array<{ name: string; value: string; inline?: boolean }>;
+  };
 }
 
 export class MESSAGE_CREATE {
@@ -24,7 +53,7 @@ export class MESSAGE_CREATE {
   constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = this.payload.d;
     this.author = new UserStruct(data.author);
-    // this.guild = new GuildStruct(discordGuild); - `discordGuild` should be a cached guild object that uses data.guild_id
+    // this.guild = new GuildStruct(discordGuild, client); - `discordGuild` should be a cached guild object that uses data.guild_id
     // this.channel = new ChannelStruct(discordChannel, client); - `discordChannel` should be a cached channel object that uses data.channel_id
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
@@ -46,7 +75,7 @@ export class MESSAGE_CREATE {
       {
         content: msg,
         tts: options.tts,
-        embed: options.embed
+        embed: options.embed,
       },
     );
   }
