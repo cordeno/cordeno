@@ -2,6 +2,7 @@
 import { Client } from "../../Client.ts";
 import { Channel, User, Overwrite } from "../../interfaces/interface_export.ts";
 
+import { Snowflake } from "../../../util/Snowflake.ts";
 export interface MessageOptions {
   tts?: boolean;
   embed?: {
@@ -97,7 +98,7 @@ export class ChannelStruct {
     );
   } 
   
-  - Waiting for Guild and Channel Caching - see MESSAGE_CREATE.ts constructor */
+  - Waiting for DELETE and PATCH requests - see RequestHandler.ts */
 
   async send(
     msg?: string,
@@ -110,6 +111,43 @@ export class ChannelStruct {
         tts: options.tts,
         embed: options.embed,
       },
+    );
+  }
+
+  async fetch() {
+    return await this.client.http.post(`/channels/${this.id}`)
+  }
+
+  async getPins() {
+    return await this.client.http.post(`/channels/${this.id}/pins`)
+  }
+
+  async bulkDelete(messages: Array<string>, options?: {filterTwoWeeks: Boolean}) {
+    messages = options?.filterTwoWeeks ? messages.filter(((id) => Date.now() - Snowflake.parse(String(id)).timestamp < 1209600000)).splice(0, 100) : messages.splice(0, 100)
+
+    return await this.client.http.post(`/channels/${this.id}/messages/bulk-delete`, {messages: messages})
+  }
+
+  async createInvite(options?: {maxAge?: number, maxUses?: number, temporary?: Boolean, unique?: Boolean, targetUser?: string, targetUserType?: number}) {
+  
+    return await this.client.http.post(`/channels/${this.id}/invites`, {max_age: options?.maxAge, max_uses: options?.maxUses, temporary: options?.temporary, unique: options?.unique, target_user: options?.targetUser, target_user_type: options?.targetUserType})
+  }
+
+  async getInvites() {
+    console.log('req run')
+    return await this.client.http.get(`/channels/${this.id}/invites`)
+  }
+
+  async triggerTyping() {
+    return await this.client.http.post(`/channels/${this.id}/typing`)
+  }
+
+  async getMessages(
+    limit?: number,
+    options?: {before?: string, after?: string, around?: string},
+  ) {
+    return await this.client.http.get(
+      `/channels/${this.id}/messages${limit ? `?limit=${limit}` : `?limit=50`}${options?.before ? `&before=${options.before}` : ''}${options?.after ? `&after=${options?.after}` : ''}${options?.around ? `&around=${options}` : ''}`
     );
   }
 }

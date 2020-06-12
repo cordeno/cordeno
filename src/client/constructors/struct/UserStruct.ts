@@ -15,8 +15,8 @@ export class UserStruct {
     this.id = this.payload.id;
     this.username = this.payload.username;
     this.discriminator = this.payload.discriminator;
-    if (payload.avatar) this.avatar = this.payload.avatar;
-    if (payload.system) this.system = this.payload.system;
+    this.avatar = this.payload.avatar;
+    this.system = this.payload.system;
   }
 
   get createdTimestamp() {
