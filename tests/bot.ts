@@ -28,10 +28,6 @@ for await (const ctx of client) {
       // Sets client presence
       client.user.setPresence({
         status: "online",
-        game: {
-          name: "Taking over the world!",
-          type: "playing",
-        },
       });
       break;
     }
