@@ -183,6 +183,10 @@ export class WebSocketManager {
         err(new Error("An invalid token was provided!"));
         break;
       }
+      default: {
+        this.reconnect();
+        break;
+      }
     }
   }
 }
