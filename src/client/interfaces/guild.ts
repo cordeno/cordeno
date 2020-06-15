@@ -32,7 +32,7 @@ export interface Guild {
   system_channel_id: string;
   system_channel_flags: number;
   rules_channel_id: string | null;
-  joined_at?: string;
+  joined_at: string;
   large?: boolean;
   unavailable?: boolean;
   member_count?: number;

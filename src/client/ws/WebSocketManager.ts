@@ -24,7 +24,7 @@ export class WebSocketManager {
   private status: string = "connecting";
   private clientCache!: any;
   constructor(private client: Client) {
-    this.clientCache = client.cache.get("client");
+    this.clientCache = client.cache.client.get("client");
   }
 
   // Connects to API

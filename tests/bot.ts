@@ -81,7 +81,7 @@ for await (const ctx of client) {
             await msg.reply(`User created at: ${msg.author.createdOn}`);
             await msg.reply(`Created at: ${msg.createdAt}`);
             await msg.reply(`Client name: ${client.user.name}`);
-            console.log(await msg.guild.id);
+            console.log(await msg.guild.joinedAt);
             break;
           }
           case "cordeno": {

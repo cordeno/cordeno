@@ -1,4 +1,5 @@
 import { Cordeno, CordenoOptions } from "./constant/cordeno.ts";
+import { CordenoMap } from "../util/CordenoMap.ts";
 import { WebSocketManager } from "./ws/WebSocketManager.ts";
 import { ReqHandler } from "./rest/ReqHandler.ts";
 import * as Constructor from "./constructors/constructor_export.ts";
@@ -10,7 +11,10 @@ export class Client {
   http!: ReqHandler;
   options!: CordenoOptions;
   event: AsyncEventQueue = new AsyncEventQueue();
-  cache = new Map<string, any>();
+  cache = {
+    client: new CordenoMap<string, any>(),
+    guild: new CordenoMap<string, any>(),
+  };
   public user!: Constructor.ClientUser;
 
   private mux = new DenoAsync.MuxAsyncIterator<any>();
@@ -35,7 +39,7 @@ export class Client {
   }
 
   async _init() {
-    const cache = this.cache.set("client", {
+    const cache = this.cache.client.set("client", {
       sessionID: null,
       sequence: null,
       gateway: null,
