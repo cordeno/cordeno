@@ -1,12 +1,44 @@
 // https://discord.com/developers/docs/resources/channel#message-object
 
 import { Client } from "../Client.ts";
-import { UserStruct } from "./struct/User.ts";
+import { UserStruct } from "./struct/UserStruct.ts";
+import { GuildStruct } from "./struct/GuildStruct.ts";
+import { ChannelStruct } from "./struct/ChannelStruct.ts";
 import * as Interfaces from "../interfaces/interface_export.ts";
 
 export interface MessageOptions {
   mention?: boolean;
   tts?: boolean;
+  embed?: {
+    title?: string;
+    type?: string;
+    description?: string;
+    url?: string;
+    timestamp?: Date;
+    color?: number;
+    footer?: { text: string; icon_url?: string; proxy_icon_url?: string };
+    image?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    thumbnail?: {
+      url?: string;
+      proxy_url?: string;
+      height?: number;
+      width?: number;
+    };
+    video?: { url?: string; height?: number; width?: number };
+    provider?: { name?: string; url?: string };
+    author?: {
+      name?: string;
+      url?: string;
+      icon_url?: string;
+      proxy_icon_url?: string;
+    };
+    fields?: Array<{ name: string; value: string; inline?: boolean }>;
+  };
 }
 
 export class MESSAGE_CREATE {
@@ -15,10 +47,17 @@ export class MESSAGE_CREATE {
   public editedAt!: Date | null;
   public content!: string;
   public member!: Interfaces.GuildMember | null;
+  public guild!: GuildStruct;
+  public channel!: ChannelStruct;
 
   constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = this.payload.d;
-    this.author = new UserStruct(data.author);
+    // Constructs author methods
+    this.author = new UserStruct(client, data.author);
+
+    // Constructs guild methods
+    this.guild = new GuildStruct(client, payload.d);
+    // this.channel = new ChannelStruct(discordChannel, client); - `discordChannel` should be a cached channel object that uses data.channel_id
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
       ? new Date(data.edited_timestamp)
@@ -27,7 +66,7 @@ export class MESSAGE_CREATE {
   }
 
   async reply(
-    msg: string,
+    msg?: string,
     options: MessageOptions = { mention: false, tts: false },
   ) {
     if (options.mention) {

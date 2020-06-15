@@ -27,56 +27,50 @@ export class ReqQueue {
     return this.exec(this.queue.shift());
   }
 
-  exec(request: Request) {
-    return new Promise(async (resolve, reject) => {
-      if (this.isBusy) {
-        this.queue.unshift(request);
-        return null;
-      }
+  async exec(request: Request) {
+    if (this.isBusy) {
+      this.queue.unshift(request);
+      return null;
+    }
 
-      this.isBusy = true;
+    this.isBusy = true;
 
-      const ratelimit: boolean = this.remaining <= 0 && Date.now() < this.reset;
+    const ratelimit: boolean = this.remaining <= 0 && Date.now() < this.reset;
 
-      if (ratelimit) {
-        await DenoAsync.delay(this.reset - Date.now());
-      }
-      let res: Response = await request.fire();
+    if (ratelimit) {
+      await DenoAsync.delay(this.reset - Date.now());
+    }
+    let res: Response = await request.fire();
 
-      if (res && res.headers) {
-        const date = res.headers.get("date");
-        const limit = res.headers.get("X-RateLimit-Limit");
-        const remaining = res.headers.get("X-RateLimit-Remaining");
-        const reset = Number(res.headers.get("X-RateLimit-Reset")) * 1000;
-        const resetAfter = Number(res.headers.get("X-RateLimit-Reset-After")) *
-          1000;
+    if (res && res.headers) {
+      const date = res.headers.get("date");
+      const limit = res.headers.get("X-RateLimit-Limit");
+      const remaining = res.headers.get("X-RateLimit-Remaining");
+      const reset = Number(res.headers.get("X-RateLimit-Reset")) * 1000;
+      // @ts-ignore deno-fmt-ignore
+      const resetAfter = Number(res.headers.get("X-RateLimit-Reset-After")) * 1000;
 
-        this.limit = limit ? Number(limit) : Infinity;
-        this.remaining = remaining ? Number(remaining) : 1;
-        // deno-fmt-ignore
-        this.reset = reset ? (new Date(Number(reset)).getTime()) - (new Date(String(date)).getTime() - Date.now()) : Date.now();
-        this.resetAfter = resetAfter ? Number(resetAfter) : -1;
-      }
+      this.limit = limit ? Number(limit) : Infinity;
+      this.remaining = remaining ? Number(remaining) : 1;
+      // deno-fmt-ignore
+      this.reset = reset ? (new Date(Number(reset)).getTime()) - (new Date(String(date)).getTime() - Date.now()) : Date.now();
+      this.resetAfter = resetAfter ? Number(resetAfter) : -1;
+    }
 
-      this.isBusy = false;
+    this.isBusy = false;
 
-      if (res.ok) {
-        if (request.options.method === "GET") {
-          res = await res.json();
-          resolve(res);
-        } else {
-          resolve(res);
-        }
-        return this.run();
-      } else if (res.status === 429) {
-        this.client.event.post("RATELIMIT", {
-          route: request.route,
-          resetIn: this.resetAfter,
-        });
-        this.queue.unshift(request);
-        await DenoAsync.delay(this.resetAfter);
-        return this.run();
-      }
-    });
+    if (res.ok) {
+      res = await res.json();
+      request.options.resolve(res);
+      return this.run();
+    } else if (res.status === 429) {
+      this.client.event.post("RATELIMIT", {
+        route: request.route,
+        resetIn: this.resetAfter,
+      });
+      this.queue.unshift(request);
+      await DenoAsync.delay(this.resetAfter);
+      return this.run();
+    }
   }
 }

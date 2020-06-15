@@ -9,7 +9,7 @@ export interface Channel {
   position?: number;
   permission_overwrites?: Array<Overwrite>;
   name?: string;
-  topic?: string;
+  topic?: string | null;
   nsfw?: boolean;
   last_message_id?: string;
   bitrate?: number;

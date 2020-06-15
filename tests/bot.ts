@@ -28,10 +28,6 @@ for await (const ctx of client) {
       // Sets client presence
       client.user.setPresence({
         status: "online",
-        game: {
-          name: "Taking over the world!",
-          type: "playing",
-        },
       });
       break;
     }
@@ -71,16 +67,29 @@ for await (const ctx of client) {
     case ev.Message: {
       const msg: MESSAGE_CREATE = ctx;
       if (msg.author.id !== client.user.id) {
-        if (msg.content === "!ping") {
-          await msg.reply(`Pong!`);
-          await msg.reply(`Message author: ${msg.author.username}`);
-          await msg.reply(`User created at: ${msg.author.createdOn}`);
-          await msg.reply(`Created at: ${msg.createdAt}`);
-          await msg.reply(`Client name: ${client.user.name}`);
-          continue;
-        }
-        if (msg.content === "!cordeno") {
-          await msg.reply(`Cordeno version: v${client.version}`);
+        let prefix = "!";
+        let args: Array<string> = msg.content
+          .slice(Object.keys(prefix).length)
+          .trim()
+          .split(/ +/g);
+        let cmd = args?.shift()?.toLowerCase();
+
+        switch (cmd) {
+          case "ping": {
+            await msg.reply(`Pong!`);
+            await msg.reply(`Message author: ${msg.author.username}`);
+            await msg.reply(`User created at: ${msg.author.createdOn}`);
+            await msg.reply(`Created at: ${msg.createdAt}`);
+            await msg.reply(`Client name: ${client.user.name}`);
+            console.log(await msg.guild.id);
+            break;
+          }
+          case "cordeno": {
+            await msg.reply(`Cordeno v${client.version}`, {
+              mention: true,
+            });
+            break;
+          }
         }
       }
       break;

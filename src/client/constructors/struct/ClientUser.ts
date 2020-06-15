@@ -69,7 +69,7 @@ export class ClientUser {
     }
     return this.client.ws.socket.send(JSON.stringify({
       op: OPCODE.PresenceUpdate,
-      d: { ...options, since: null, afk: false, status: "online" },
+      d: { ...options, since: null, afk: false, game: {}, status: "online" },
     }));
   }
 }
