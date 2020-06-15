@@ -11,7 +11,7 @@ export class UserStruct {
   public bot: boolean = false;
   public system?: boolean = false;
 
-  constructor(private payload: User) {
+  constructor(private client: Client, private payload: User) {
     this.id = this.payload.id;
     this.username = this.payload.username;
     this.discriminator = this.payload.discriminator;

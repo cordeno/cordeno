@@ -52,8 +52,11 @@ export class MESSAGE_CREATE {
 
   constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = this.payload.d;
-    this.author = new UserStruct(data.author);
-    // this.guild = new GuildStruct(discordGuild, client); - `discordGuild` should be a cached guild object that uses data.guild_id
+    // Constructs author methods
+    this.author = new UserStruct(client, data.author);
+
+    // Constructs guild methods
+    this.guild = new GuildStruct(client, payload.d);
     // this.channel = new ChannelStruct(discordChannel, client); - `discordChannel` should be a cached channel object that uses data.channel_id
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
@@ -75,7 +78,6 @@ export class MESSAGE_CREATE {
       {
         content: msg,
         tts: options.tts,
-        embed: options.embed,
       },
     );
   }

@@ -7,6 +7,8 @@ interface Options {
   method?: string;
   body?: object | string | null;
   client: Client | null;
+  resolve: any;
+  reject: any;
 }
 
 export class Request {
@@ -16,6 +18,8 @@ export class Request {
       method: "GET",
       body: null,
       client: null,
+      resolve: null,
+      reject: null,
     },
   ) {
   }

@@ -85,147 +85,16 @@ for await (const ctx of client) {
             await msg.reply(`User created at: ${msg.author.createdOn}`);
             await msg.reply(`Created at: ${msg.createdAt}`);
             await msg.reply(`Client name: ${client.user.name}`);
-            /* await msg.reply(`Current Guild: ${msg.guild.name}`)
-          await msg.reply(`Current Channel: ${msg.channel.name}`)
-            await msg.reply(`Current Channel: ${msg.channel.name}`) 
-          - Waiting for Guild and Channel Caching - see MESSAGE_CREATE.ts constructor*/
+            console.log(await msg.guild.id);
             break;
           }
           case "cordeno": {
-            await msg.reply(
-              "",
-              {
-                embed: {
-                  title: `Cordeno version: v${client.version}`,
-                  color: 0x2f3136,
-                },
-              },
-            );
-            break;
-          }
-          case "guildinfo": {
-            await msg.channel.triggerTyping();
-            let icon = msg.guild.getIconURL();
-            let pruneCount = await msg.guild.getPrune();
-            let channels = msg.guild.channels;
-            let members = msg.guild.members;
-            let roles = msg.guild.roles;
-            await msg.channel.send(
-              "",
-              {
-                embed: {
-                  color: 0x2f3136,
-                  author: { icon_url: icon, name: msg.guild.name },
-                  fields: [
-                    { name: "Members", value: members?.length, inline: true },
-                    { name: "Roles", value: roles.length, inline: true },
-                    { name: "Channels", value: channels?.length, inline: true },
-                    { name: "Prune", value: pruneCount.length, inline: true },
-                  ],
-                },
-              },
-            );
-            break;
-          }
-          case "newrole": {
-            await msg.channel.triggerTyping();
-            msg.guild.createRole(
-              args[0],
-              {
-                color: Number.parseInt(args[1]),
-                permissions: Number.parseInt(args[3]),
-                mentionable: args[2] === "true",
-              },
-            ).then((role) => {
-              msg.channel.send(
-                "",
-                {
-                  embed: {
-                    color: 0x2f3136,
-                    description: `:white_check_mark: Created new role **${
-                      args[0] ? args[0] : "new role"
-                    }** ${args[1] ? `With color **${args[1]}**` : ""} that is ${
-                      args[2] === "true" ? "" : "**not**"
-                    } mentionable${
-                      args[3] ? `With permissions: **${args[3]}**` : ""
-                    }!`,
-                  },
-                },
-              );
+            await msg.reply(`Cordeno v${client.version}`, {
+              mention: true,
             });
             break;
           }
-          case "newchannels": {
-            await msg.channel.triggerTyping();
-            if (!args[0]) msg.reply("You must supply a channel name!");
-            else {
-              msg.guild.createChannel(
-                args[0],
-                {
-                  type: Number.parseInt(args[1]),
-                  topic: args.slice(3).join(" "),
-                  rateLimitPerUser: Number.parseInt(args[2]),
-                },
-              ).then(() => {
-                msg.channel.send(
-                  "",
-                  {
-                    embed: {
-                      color: 0x2f3136,
-                      description: `:white_check_mark: Created new channel **${
-                        args[0]
-                      }** ${
-                        args[3]
-                          ? `With topic **${args.slice(3).join(" ")}**`
-                          : ""
-                      } that is type ${args[1] ? args[1] : "0"}!`,
-                    },
-                  },
-                );
-              });
-            }
-            break;
-          }
-          case "purge": {
-            await msg.channel.triggerTyping();
-            if (!args[0]) msg.reply("You must provide message IDs to purge!");
-            else {
-              let msgs = await msg.channel.getMessages(
-                Number.parseInt(args[0]),
-              );
-              let purge: Array<string> = msgs.map((m: any) => m.id || m);
-              await msg.channel.bulkDelete(purge);
-              msg.channel.send(
-                "",
-                {
-                  embed: {
-                    color: 0x2f3136,
-                    description:
-                      `:white_check_mark: Deleted ${msgs.length} messages!`,
-                  },
-                },
-              );
-            }
-            break;
-          }
-          case "createinv": {
-            await msg.channel.triggerTyping();
-            await msg.channel.createInvite(
-              {
-                maxAge: Number.parseInt(args[0]),
-                maxUses: Number.parseInt(args[1]),
-              },
-            );
-            await msg.reply("Created new invite!");
-            break;
-          }
         }
-        /* else if (msg.content === "!nuke") {
-          msg.channel.send('',{embed: {title: `💣 Nuking Channel: **${msg.channel.name}**...`, color: 0x2f3136}})
-          await msg.channel.delete()
-        } 
-        
-        - Waiting for DELETE request - see ReqHandler.ts */
       }
       break;
     }

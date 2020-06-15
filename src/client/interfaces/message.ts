@@ -7,7 +7,7 @@ import { ChannelMention, Activity, Application } from "./channel.ts";
 export interface Message {
   id: string;
   channel_id: string;
-  guild_id?: string;
+  guild_id: string;
   author: User;
   member?: GuildMember;
   content: string;
