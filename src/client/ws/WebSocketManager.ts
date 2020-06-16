@@ -84,7 +84,7 @@ export class WebSocketManager {
 
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
-    this.panic(fresh ? 1000 : 1012);
+    await this.panic(fresh ? 1000 : 1012);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
@@ -123,6 +123,7 @@ export class WebSocketManager {
 
   // Starts the beat interval
   async heartbeatInterval(rate: number) {
+    if (this.socket.isClosed) return this.reconnect();
     this.heartbeat.rate = rate;
     this.heartbeat.interval = setInterval(() => {
       this.heartbeatSend();
