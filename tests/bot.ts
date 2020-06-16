@@ -28,6 +28,10 @@ for await (const ctx of client) {
       // Sets client presence
       client.user.setPresence({
         status: "online",
+        game: {
+          type: "playing",
+          name: `Cordeno ${client.version}`,
+        },
       });
       break;
     }
