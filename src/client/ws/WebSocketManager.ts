@@ -85,7 +85,7 @@ export class WebSocketManager {
       console.log("An error occured:");
       console.log(e);
       console.log("===================================================");
-      this.reconnect()
+      this.reconnect();
     }
   }
 
