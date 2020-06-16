@@ -29,56 +29,63 @@ export class WebSocketManager {
 
   // Connects to API
   async connect() {
-    this.socket = await connectWebSocket(this.clientCache.gateway);
+    try {
+      this.socket = await connectWebSocket(this.clientCache.gateway);
 
-    for await (const msg of this.socket) {
-      if (typeof msg === "string") {
-        const payload: Payload = JSON.parse(msg.toString());
+      for await (const msg of this.socket) {
+        if (typeof msg === "string") {
+          const payload: Payload = JSON.parse(msg.toString());
 
-        //Grabs last sequence number
-        if (payload.s) {
-          this.clientCache.sequence = payload.s;
-        }
+          //Grabs last sequence number
+          if (payload.s) {
+            this.clientCache.sequence = payload.s;
+          }
 
-        if (payload.op === OPCODE.Dispatch) {
-          this.client.event.post(payload.t, payload);
-        }
-        switch (payload.op) {
-          case OPCODE.Hello: {
-            this.identify();
-            this.heartbeatInterval(payload.d.heartbeat_interval);
-            break;
+          if (payload.op === OPCODE.Dispatch) {
+            this.client.event.post(payload.t, payload);
           }
-          case OPCODE.Heartbeat: {
-            this.heartbeat.recieved = true;
-            this.heartbeatSend();
-            break;
-          }
-          case OPCODE.HeartbeatACK: {
-            this.heartbeat.recieved = true;
-            break;
-          }
-          case OPCODE.Reconnect: {
-            this.client.event.post("RESUMED", {
-              reconnectRequested: true,
-            });
-            await this.reconnect();
-            break;
-          }
-          case OPCODE.InvalidSession: {
-            this.client.event.post("INVALID_SESSION", payload);
-            await DenoAsync.delay(5000);
-            if (payload.d === true) {
-              this.reconnect();
-            } else {
-              this.reconnect(true);
+          switch (payload.op) {
+            case OPCODE.Hello: {
+              this.identify();
+              this.heartbeatInterval(payload.d.heartbeat_interval);
+              break;
             }
-            break;
+            case OPCODE.Heartbeat: {
+              this.heartbeat.recieved = true;
+              this.heartbeatSend();
+              break;
+            }
+            case OPCODE.HeartbeatACK: {
+              this.heartbeat.recieved = true;
+              break;
+            }
+            case OPCODE.Reconnect: {
+              this.client.event.post("RESUMED", {
+                reconnectRequested: true,
+              });
+              await this.reconnect();
+              break;
+            }
+            case OPCODE.InvalidSession: {
+              this.client.event.post("INVALID_SESSION", payload);
+              await DenoAsync.delay(5000);
+              if (payload.d === true) {
+                this.reconnect();
+              } else {
+                this.reconnect(true);
+              }
+              break;
+            }
           }
+        } else if (isWebSocketCloseEvent(msg)) {
+          return this.connectionClosed(msg.code);
         }
-      } else if (isWebSocketCloseEvent(msg)) {
-        return this.connectionClosed(msg.code);
       }
+    } catch (e) {
+      console.log("An error occured:");
+      console.log(e);
+      console.log("===================================================");
+      this.reconnect()
     }
   }
 
