@@ -82,10 +82,7 @@ export class WebSocketManager {
         }
       }
     } catch (e) {
-      console.log("An error occured:");
-      console.log(e);
-      console.log("===================================================");
-      this.reconnect();
+      this.reconnect(true);
     }
   }
 
