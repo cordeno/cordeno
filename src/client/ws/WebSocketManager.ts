@@ -157,7 +157,7 @@ export class WebSocketManager {
   async panic(code: number = 1000) {
     this.status = "panick";
     this.heartbeat.recieved = true;
-    if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
+    clearInterval(this.heartbeat.interval);
     console.log(this.socket.isClosed);
     if (!this.socket.isClosed) {
       this.socket.close(code);
