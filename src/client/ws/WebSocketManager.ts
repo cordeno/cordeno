@@ -158,8 +158,9 @@ export class WebSocketManager {
     this.status = "panick";
     this.heartbeat.recieved = true;
     if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
+    console.log(this.socket.isClosed);
     if (!this.socket.isClosed) {
-      this.socket.close(code).catch();
+      this.socket.close(code);
     }
   }
 
