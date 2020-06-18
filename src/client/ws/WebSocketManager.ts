@@ -34,7 +34,7 @@ export class WebSocketManager {
 
       // Patch for undetected socket closes
       if (this.socket.isClosed) {
-        this.reconnect()
+        this.reconnect();
       }
       for await (const msg of this.socket) {
         if (typeof msg === "string") {
