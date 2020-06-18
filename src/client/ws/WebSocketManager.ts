@@ -92,7 +92,7 @@ export class WebSocketManager {
 
   // Reconnects to API
   async reconnect(fresh: boolean = false, panic: boolean = true) {
-    await this.panic(fresh ? 1000 : 1012, (panic) ? true : false);
+    await this.panic(fresh ? 1000 : 1012, panic);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
