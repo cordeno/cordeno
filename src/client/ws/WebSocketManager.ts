@@ -32,6 +32,10 @@ export class WebSocketManager {
     try {
       this.socket = await connectWebSocket(this.clientCache.gateway);
 
+      // Patch for undetected socket closes
+      if (this.socket.isClosed) {
+        this.reconnect()
+      }
       for await (const msg of this.socket) {
         if (typeof msg === "string") {
           const payload: Payload = JSON.parse(msg.toString());
