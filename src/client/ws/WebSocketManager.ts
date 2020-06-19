@@ -78,7 +78,8 @@ export class WebSocketManager {
             }
           }
         } else if (isWebSocketCloseEvent(msg)) {
-          return this.connectionClosed(msg.code);
+          this.connectionClosed(msg.code);
+          break;
         }
       }
     } catch (e) {
