@@ -159,11 +159,15 @@ export class WebSocketManager {
     this.status = "panick";
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
+
+    // If sockets still open, close
     if (closeSocket) {
       this.socket.close(code);
-      // @ts-ignore
-      this.socket = null;
     }
+
+    // Delete old socket instance
+    // @ts-ignore
+    this.socket = null;
   }
 
   // Fired when the socket is disconnected
