@@ -1,3 +1,13 @@
+/*
+Status codes
+==============
+0 - connected
+1 - connecting
+2 - reconnecting
+3 - ws-no-disconnect
+4 - error
+*/
+
 import {
   connectWebSocket,
   WebSocket,
@@ -21,7 +31,7 @@ export class WebSocketManager {
     rate: 0,
     total: 0,
   };
-  private status: string = "connecting";
+  private status: number = 1;
   private clientCache!: any;
   constructor(private client: Client) {
     this.clientCache = client.cache.client.get("client");
@@ -90,17 +100,17 @@ export class WebSocketManager {
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
     await this.panic(fresh ? 1000 : 1012);
-    if (!fresh) this.status = "reconnecting";
-    else this.status = "connecting";
+    if (!fresh) this.status = 2;
+    else this.status = 1;
     this.connect();
   }
 
   // Indentifies client to discord
   async identify() {
-    if (this.status === "reconnecting") {
+    if (this.status === 2) {
       return this.resume();
     }
-    this.status = "connected";
+    this.status = 0;
     return this.socket.send(JSON.stringify({
       op: OPCODE.Identify,
       d: {
@@ -115,7 +125,7 @@ export class WebSocketManager {
   }
 
   async resume() {
-    this.status = "connected";
+    this.status = 0;
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
       d: {
@@ -156,12 +166,12 @@ export class WebSocketManager {
 
   // Fired when something went wrong
   async panic(code: number = 1000) {
-    this.status = "panick";
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
 
     // If sockets still open, close
-    if (!this.socket.isClosed) {
+    console.log(this.status);
+    if (!this.socket.isClosed && this.status !== 3) {
       this.socket.close(code);
     }
 
@@ -198,6 +208,7 @@ export class WebSocketManager {
         break;
       }
       default: {
+        this.status = 3;
         this.reconnect();
         break;
       }
