@@ -170,7 +170,7 @@ export class WebSocketManager {
     clearInterval(this.heartbeat.interval);
 
     // If sockets still open, close
-    console.log(this.status);
+    console.log(`Status: ${this.status}`);
     if (!this.socket.isClosed && this.status !== 3) {
       this.socket.close(code);
     }
