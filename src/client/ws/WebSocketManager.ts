@@ -78,8 +78,7 @@ export class WebSocketManager {
             }
           }
         } else if (isWebSocketCloseEvent(msg)) {
-          this.connectionClosed(msg.code);
-          break;
+          return this.connectionClosed(msg.code);
         }
       }
     } catch (e) {
@@ -88,8 +87,8 @@ export class WebSocketManager {
   }
 
   // Reconnects to API
-  async reconnect(fresh: boolean = false) {
-    await this.panic(fresh ? 1000 : 1012);
+  async reconnect(fresh: boolean = false, code: number = 0) {
+    await this.panic(fresh ? 1000 : 1012, code);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
@@ -155,12 +154,13 @@ export class WebSocketManager {
   }
 
   // Fired when something went wrong
-  async panic(code: number = 1000) {
+  async panic(code: number = 1000, disconnectCode: number = 0) {
     this.status = "panick";
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
     console.log(this.socket.isClosed);
-    if (!this.socket.isClosed) {
+    console.log(`Panic code: ${disconnectCode}`)
+    if (!this.socket.isClosed && ![1000, 1001].includes(disconnectCode)) {
       this.socket.close(code);
     }
   }
@@ -193,7 +193,7 @@ export class WebSocketManager {
         break;
       }
       default: {
-        this.reconnect();
+        this.reconnect(false, code);
         break;
       }
     }
