@@ -158,11 +158,11 @@ export class WebSocketManager {
     this.status = "panick";
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
-    console.log(this.socket.isClosed);
+    /*console.log(this.socket.isClosed);
     console.log(`Panic code: ${disconnectCode}`)
     if (!this.socket.isClosed && ![1000, 1001].includes(disconnectCode)) {
       this.socket.close(code);
-    }
+    }*/
   }
 
   // Fired when the socket is disconnected
