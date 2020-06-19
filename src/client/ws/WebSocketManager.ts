@@ -78,7 +78,8 @@ export class WebSocketManager {
             }
           }
         } else if (isWebSocketCloseEvent(msg)) {
-          return this.connectionClosed(msg.code);
+          this.connectionClosed(msg.code);
+          break;
         }
       }
     } catch (e) {
@@ -160,11 +161,13 @@ export class WebSocketManager {
     clearInterval(this.heartbeat.interval);
     if (closeSocket) {
       this.socket.close(code);
+      // @ts-ignore
+      this.socket = null;
     }
   }
 
   // Fired when the socket is disconnected
-  async connectionClosed(code: number) {
+  connectionClosed(code: number) {
     console.log(`Error code: ${code}`);
     console.log(
       "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
