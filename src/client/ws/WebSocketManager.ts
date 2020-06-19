@@ -88,8 +88,8 @@ export class WebSocketManager {
   }
 
   // Reconnects to API
-  async reconnect(fresh: boolean = false, closeSocket: boolean = true) {
-    await this.panic(fresh ? 1000 : 1012, closeSocket);
+  async reconnect(fresh: boolean = false) {
+    await this.panic(fresh ? 1000 : 1012);
     if (!fresh) this.status = "reconnecting";
     else this.status = "connecting";
     this.connect();
@@ -155,13 +155,13 @@ export class WebSocketManager {
   }
 
   // Fired when something went wrong
-  async panic(code: number = 1000, closeSocket: boolean = true) {
+  async panic(code: number = 1000) {
     this.status = "panick";
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
 
     // If sockets still open, close
-    if (closeSocket) {
+    if (!this.socket.isClosed) {
       this.socket.close(code);
     }
 
@@ -198,7 +198,7 @@ export class WebSocketManager {
         break;
       }
       default: {
-        this.reconnect(false, false);
+        this.reconnect();
         break;
       }
     }
