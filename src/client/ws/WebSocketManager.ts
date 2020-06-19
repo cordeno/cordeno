@@ -173,7 +173,9 @@ export class WebSocketManager {
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
 
-    console.log(`Close code is not 1000: ${[1000].indexOf(this.wsCloseCode) === -1}`);
+    console.log(
+      `Close code is not 1000: ${[1000].indexOf(this.wsCloseCode) === -1}`,
+    );
 
     // If sockets still open, close | Don't close socket if closeCode is 1000
     if (!this.socket.isClosed && [1000].indexOf(this.wsCloseCode) === -1) {
