@@ -100,8 +100,12 @@ export class WebSocketManager {
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
     await this.panic(fresh ? 1000 : 1012);
-    if (!fresh) this.status = 2;
-    else this.status = 1;
+    if (!fresh) {
+      this.status = 2;
+    }
+    else {
+      this.status = 1;
+    }
     this.connect();
   }
 
@@ -171,13 +175,13 @@ export class WebSocketManager {
 
     // If sockets still open, close
     console.log(`Status: ${this.status}`);
-    if (!this.socket.isClosed && this.status !== 3) {
+    if (!this.socket.isClosed) {
       this.socket.close(code);
     }
 
     // Delete old socket instance
     // @ts-ignore
-    this.socket = null;
+    // this.socket = null;
   }
 
   // Fired when the socket is disconnected
@@ -208,8 +212,7 @@ export class WebSocketManager {
         break;
       }
       default: {
-        this.status = 3;
-        this.reconnect();
+        this.reconnect(true);
         break;
       }
     }
