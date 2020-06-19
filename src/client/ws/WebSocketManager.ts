@@ -173,17 +173,13 @@ export class WebSocketManager {
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
 
-    // If sockets still open, close
-    console.log(`Close code !== 1000: ${1000 !== this.wsCloseCode}`);
-    if (!this.socket.isClosed && 1000 !== this.wsCloseCode) {
-      return this.socket.close(code);
-    } else {
-      return;
-    }
+    console.log(`Close code is not 1000: ${[1000].indexOf(this.wsCloseCode) === -1}`);
 
-    // Delete old socket instance
-    // @ts-ignore
-    // this.socket = null;
+    // If sockets still open, close | Don't close socket if closeCode is 1000
+    if (!this.socket.isClosed && [1000].indexOf(this.wsCloseCode) === -1) {
+      this.socket.close(code).catch();
+    }
+    this.wsCloseCode = 0;
   }
 
   // Fired when the socket is disconnected
