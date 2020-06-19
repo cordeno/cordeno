@@ -32,6 +32,7 @@ export class WebSocketManager {
     total: 0,
   };
   private status: number = 1;
+  private wsCloseCode: number = 0;
   private clientCache!: any;
   constructor(private client: Client) {
     this.clientCache = client.cache.client.get("client");
@@ -174,9 +175,12 @@ export class WebSocketManager {
     clearInterval(this.heartbeat.interval);
 
     // If sockets still open, close
-    console.log(`Status: ${this.status}`);
-    if (!this.socket.isClosed) {
-      this.socket.close(code);
+    console.log(`Close code !== 1000: ${1000 !== this.wsCloseCode}`);
+    if (!this.socket.isClosed && 1000 !== this.wsCloseCode) {
+      return this.socket.close(code);
+    }
+    else {
+      return;
     }
 
     // Delete old socket instance
@@ -190,6 +194,7 @@ export class WebSocketManager {
     console.log(
       "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
     );
+    this.wsCloseCode = code;
     switch (code) {
       case 4000: // Unknown error
       case 4007: // Invalid seq
