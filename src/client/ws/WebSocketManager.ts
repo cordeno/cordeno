@@ -103,8 +103,7 @@ export class WebSocketManager {
     await this.panic(fresh ? 1000 : 1012);
     if (!fresh) {
       this.status = 2;
-    }
-    else {
+    } else {
       this.status = 1;
     }
     this.connect();
@@ -178,8 +177,7 @@ export class WebSocketManager {
     console.log(`Close code !== 1000: ${1000 !== this.wsCloseCode}`);
     if (!this.socket.isClosed && 1000 !== this.wsCloseCode) {
       return this.socket.close(code);
-    }
-    else {
+    } else {
       return;
     }
 
