@@ -22,12 +22,16 @@ export class MESSAGE_CREATE {
 
   constructor(private client: Client, private payload: any) {
     const data: Interfaces.Message = this.payload.d;
+
     // Constructs author methods
     this.author = new UserStruct(client, data.author);
 
     // Constructs guild methods
-    this.guild = new GuildStruct(client, payload.d);
-    // this.channel = new ChannelStruct(discordChannel, client); - `discordChannel` should be a cached channel object that uses data.channel_id
+    this.guild = this.client.cache.guild.get(data.guild_id);
+
+    // Constructs channel methods
+    this.channel = new ChannelStruct(client, payload.d);
+
     this.createdAt = new Date(data.timestamp);
     this.editedAt = (data.edited_timestamp)
       ? new Date(data.edited_timestamp)

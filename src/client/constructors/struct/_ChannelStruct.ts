@@ -163,7 +163,6 @@ export class ChannelStruct {
   }
 
   async getInvites() {
-    console.log("req run");
     return await this.client.http.get(`/channels/${this.id}/invites`);
   }
 

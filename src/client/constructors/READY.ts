@@ -15,7 +15,7 @@ export class READY {
     this.privateChannels = this.payload.d.private_channels;
     this.unavailableGuilds = this.payload.d.guilds;
     this.sessionID = this.payload.d.session_id;
-    client.cache.get("client").sessionID = this.sessionID;
+    client.cache.client.get("client").sessionID = this.sessionID;
     this.shard = this.payload.d.shard;
   }
 }

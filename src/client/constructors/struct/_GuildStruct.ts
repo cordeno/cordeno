@@ -126,7 +126,6 @@ export class GuildStruct {
   }
 
   getIconURL() {
-    console.log(this.icon);
     return this.icon
       ? `https://cdn.discordapp.com/icons/${this.id}/${this.icon}`
       : "";
@@ -158,7 +157,6 @@ export class GuildStruct {
   }
 
   async getInvites() {
-    console.log("boop");
     return await this.client.http.get(
       `/guilds/${this.id}/invites`,
     );

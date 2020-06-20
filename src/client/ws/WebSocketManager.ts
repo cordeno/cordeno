@@ -1,3 +1,13 @@
+/*
+Status codes
+==============
+0 - connected
+1 - connecting
+2 - reconnecting
+3 - ws-no-disconnect
+4 - error
+*/
+
 import {
   connectWebSocket,
   WebSocket,
@@ -21,81 +31,89 @@ export class WebSocketManager {
     rate: 0,
     total: 0,
   };
-  private status: string = "connecting";
+  private status: number = 1;
   private clientCache!: any;
   constructor(private client: Client) {
-    this.clientCache = client.cache.get("client");
+    this.clientCache = client.cache.client.get("client");
   }
 
   // Connects to API
   async connect() {
-    this.socket = await connectWebSocket(this.clientCache.gateway);
+    try {
+      this.socket = await connectWebSocket(this.clientCache.gateway);
 
-    for await (const msg of this.socket) {
-      if (typeof msg === "string") {
-        const payload: Payload = JSON.parse(msg.toString());
+      for await (const msg of this.socket) {
+        if (isWebSocketCloseEvent(msg)) {
+          this.connectionClosed(msg.code);
+          break;
+        } else if (typeof msg === "string") {
+          const payload: Payload = JSON.parse(msg.toString());
 
-        //Grabs last sequence number
-        if (payload.s) {
-          this.clientCache.sequence = payload.s;
-        }
+          //Grabs last sequence number
+          if (payload.s) {
+            this.clientCache.sequence = payload.s;
+          }
 
-        if (payload.op === OPCODE.Dispatch) {
-          this.client.event.post(payload.t, payload);
-        }
-        switch (payload.op) {
-          case OPCODE.Hello: {
-            this.identify();
-            this.heartbeatInterval(payload.d.heartbeat_interval);
-            break;
+          if (payload.op === OPCODE.Dispatch) {
+            this.client.event.post(payload.t, payload);
           }
-          case OPCODE.Heartbeat: {
-            this.heartbeat.recieved = true;
-            this.heartbeatSend();
-            break;
-          }
-          case OPCODE.HeartbeatACK: {
-            this.heartbeat.recieved = true;
-            break;
-          }
-          case OPCODE.Reconnect: {
-            this.client.event.post("RESUMED", {
-              reconnectRequested: true,
-            });
-            await this.reconnect();
-            break;
-          }
-          case OPCODE.InvalidSession: {
-            this.client.event.post("INVALID_SESSION", payload);
-            await DenoAsync.delay(5000);
-            if (payload.d === true) {
-              this.reconnect();
-            } else {
-              this.reconnect(true);
+          switch (payload.op) {
+            case OPCODE.Hello: {
+              this.identify();
+              this.heartbeatInterval(payload.d.heartbeat_interval);
+              break;
             }
-            break;
+            case OPCODE.Heartbeat: {
+              this.heartbeat.recieved = true;
+              this.heartbeatSend();
+              break;
+            }
+            case OPCODE.HeartbeatACK: {
+              this.heartbeat.recieved = true;
+              break;
+            }
+            case OPCODE.Reconnect: {
+              this.client.event.post("RESUMED", {
+                reconnectRequested: true,
+              });
+              await this.reconnect();
+              break;
+            }
+            case OPCODE.InvalidSession: {
+              this.client.event.post("INVALID_SESSION", payload);
+              await DenoAsync.delay(5000);
+              if (payload.d === true) {
+                this.reconnect();
+              } else {
+                this.reconnect(true);
+              }
+              break;
+            }
           }
         }
-      } else if (isWebSocketCloseEvent(msg)) {
-        return this.connectionClosed(msg.code);
       }
+    } catch (e) {
+      this.reconnect(true);
     }
   }
 
   // Reconnects to API
   async reconnect(fresh: boolean = false) {
-    this.panic(fresh ? 1000 : 1012);
-    if (!fresh) this.status = "reconnecting";
-    else this.status = "connecting";
+    await this.panic(fresh ? 1000 : 1012);
+    if (!fresh) {
+      this.status = 2;
+    } else {
+      this.status = 1;
+    }
     this.connect();
   }
 
   // Indentifies client to discord
   async identify() {
-    if (this.status === "reconnecting") {
+    if (this.status === 2) {
       return this.resume();
     }
-    this.status = "connected";
+    this.status = 0;
     return this.socket.send(JSON.stringify({
       op: OPCODE.Identify,
       d: {
@@ -110,7 +128,7 @@ export class WebSocketManager {
   }
 
   async resume() {
-    this.status = "connected";
+    this.status = 0;
     return this.socket.send(JSON.stringify({
       op: OPCODE.Resume,
       d: {
@@ -123,6 +141,7 @@ export class WebSocketManager {
 
   // Starts the beat interval
   async heartbeatInterval(rate: number) {
+    if (this.socket.isClosed) return this.reconnect();
     this.heartbeat.rate = rate;
     this.heartbeat.interval = setInterval(() => {
       this.heartbeatSend();
@@ -150,14 +169,17 @@ export class WebSocketManager {
 
   // Fired when something went wrong
   async panic(code: number = 1000) {
-    this.status = "panick";
     this.heartbeat.recieved = true;
-    if (this.heartbeat.interval) clearInterval(this.heartbeat.interval);
-    if (!this.socket.isClosed) this.socket.close(code);
+    clearInterval(this.heartbeat.interval);
+
+    // If sockets still open, close | Don't close socket if closeCode is 1000
+    if (!this.socket.isClosed) {
+      this.socket.close(code).catch();
+    }
   }
 
   // Fired when the socket is disconnected
-  async connectionClosed(code: number) {
+  connectionClosed(code: number) {
     console.log(`Error code: ${code}`);
     console.log(
       "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
@@ -181,6 +203,10 @@ export class WebSocketManager {
       }
       case 4004: { // Authentication failed
         err(new Error("An invalid token was provided!"));
+        break;
+      }
+      default: {
+        this.reconnect(true);
         break;
       }
     }

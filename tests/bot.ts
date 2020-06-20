@@ -28,6 +28,10 @@ for await (const ctx of client) {
       // Sets client presence
       client.user.setPresence({
         status: "online",
+        game: {
+          type: "playing",
+          name: `Cordeno ${client.version}`,
+        },
       });
       break;
     }
@@ -75,13 +79,13 @@ for await (const ctx of client) {
         let cmd = args?.shift()?.toLowerCase();
 
         switch (cmd) {
-          case "ping": {
-            await msg.reply(`Pong!`);
-            await msg.reply(`Message author: ${msg.author.username}`);
-            await msg.reply(`User created at: ${msg.author.createdOn}`);
-            await msg.reply(`Created at: ${msg.createdAt}`);
-            await msg.reply(`Client name: ${client.user.name}`);
-            console.log(await msg.guild.id);
+          case "guildinfo": {
+            await msg.reply(`> The guild owner is <@${msg.guild.ownerID}>`);
+            await msg.reply(
+              `\`\`\`Guild name: ${msg.guild.name}\nGuild ID: ${msg.guild.id}\nThe Guild was created on ${msg.guild.createdOn}\`\`\``,
+            );
+
+            console.log(msg.channel.id);
             break;
           }
           case "cordeno": {
