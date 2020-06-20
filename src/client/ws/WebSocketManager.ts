@@ -32,7 +32,6 @@ export class WebSocketManager {
     total: 0,
   };
   private status: number = 1;
-  private wsCloseCode: number = 0;
   private clientCache!: any;
   constructor(private client: Client) {
     this.clientCache = client.cache.client.get("client");
@@ -44,7 +43,10 @@ export class WebSocketManager {
       this.socket = await connectWebSocket(this.clientCache.gateway);
 
       for await (const msg of this.socket) {
-        if (typeof msg === "string") {
+        if (isWebSocketCloseEvent(msg)) {
+          this.connectionClosed(msg.code);
+          break;
+        } else if (typeof msg === "string") {
           const payload: Payload = JSON.parse(msg.toString());
 
           //Grabs last sequence number
@@ -88,9 +90,6 @@ export class WebSocketManager {
               break;
             }
           }
-        } else if (isWebSocketCloseEvent(msg)) {
-          this.connectionClosed(msg.code);
-          break;
         }
       }
     } catch (e) {
@@ -173,15 +172,10 @@ export class WebSocketManager {
     this.heartbeat.recieved = true;
     clearInterval(this.heartbeat.interval);
 
-    console.log(
-      `Close code is not 1000: ${[1000].indexOf(this.wsCloseCode) === -1}`,
-    );
-
     // If sockets still open, close | Don't close socket if closeCode is 1000
-    if (!this.socket.isClosed && [1000].indexOf(this.wsCloseCode) === -1) {
+    if (!this.socket.isClosed) {
       this.socket.close(code).catch();
     }
-    this.wsCloseCode = 0;
   }
 
   // Fired when the socket is disconnected
@@ -190,7 +184,6 @@ export class WebSocketManager {
     console.log(
       "Discord API: https://discord.com/developers/docs/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes",
     );
-    this.wsCloseCode = code;
     switch (code) {
       case 4000: // Unknown error
       case 4007: // Invalid seq
