@@ -27,7 +27,7 @@ export class MESSAGE_CREATE {
     this.author = new UserStruct(client, data.author);
 
     // Constructs guild methods
-    this.guild = new GuildStruct(client, payload.d);
+    this.guild = this.client.cache.guild.get(data.guild_id);
 
     // Constructs channel methods
     this.channel = new ChannelStruct(client, payload.d);

@@ -11,15 +11,22 @@ export class GuildStruct {
   public owner: boolean | undefined = false;
   public ownerID!: string;
   public joinedAt!: Date;
+  public members!: Array<any>;
 
-  constructor(private client: Client, private payload: Guild & Message) {
-    this.id = payload.guild_id;
-    const guild: Guild = this.client.cache.guild.get(this.id);
-    this.name = guild.name;
-    this.icon = guild.icon;
-    this.owner = guild.owner;
-    this.ownerID = guild.owner_id;
-    this.joinedAt = new Date(guild.joined_at);
+  constructor(private client: Client, private payload: Guild) {
+    this.id = payload.id;
+    this.name = payload.name;
+    this.icon = payload.icon;
+    this.owner = payload.owner;
+    this.ownerID = payload.owner_id;
+    this.joinedAt = new Date(payload.joined_at);
+    this.members;
+  }
+
+  update(payload: Guild) {
+    this.name = payload.name;
+    this.icon = payload.icon;
+    if (payload.owner_id) this.ownerID = payload.owner_id;
   }
 
   get createdTimestamp() {
